@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, PlayCircle, Sparkles } from "lucide-react";
-import heroVisual from "@/assets/hero_visual.png.asset.json";
+import heroVisual from "@/assets/hero_visual.png";
 
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -87,26 +87,28 @@ export function Hero() {
           SOC 2 Type II · GDPR · HIPAA ready
         </motion.p>
 
-        {/* Hero visual */}
-        <motion.div
-          initial={{ opacity: 0, y: 60, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.8, duration: 1.1, ease }}
-          className="relative mt-20"
-        >
-          <img
-            src={heroVisual.url}
-            alt="Techies LLM observability data flow visualization"
-            className="mx-auto h-auto w-full max-w-6xl select-none"
-            style={{
-              maskImage:
-                "radial-gradient(ellipse 90% 80% at 50% 50%, black 60%, transparent 100%)",
-              WebkitMaskImage:
-                "radial-gradient(ellipse 90% 80% at 50% 50%, black 60%, transparent 100%)",
-            }}
-            draggable={false}
-          />
-        </motion.div>
+        {/* Hero Background Visual */}
+        <div className="absolute inset-0 -z-10 flex items-end justify-center overflow-hidden pointer-events-none">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.8, duration: 1.5, ease }}
+            className="relative w-full max-w-6xl translate-y-[15%]"
+          >
+            <img
+              src={heroVisual}
+              alt="Techies LLM observability data flow visualization"
+              className="mx-auto h-auto w-full select-none mix-blend-multiply opacity-80"
+              style={{
+                maskImage:
+                  "radial-gradient(ellipse 60% 60% at 50% 50%, black 20%, transparent 100%)",
+                WebkitMaskImage:
+                  "radial-gradient(ellipse 60% 60% at 50% 50%, black 20%, transparent 100%)",
+              }}
+              draggable={false}
+            />
+          </motion.div>
+        </div>
 
       </div>
     </section>
