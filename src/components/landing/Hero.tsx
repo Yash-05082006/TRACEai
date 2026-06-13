@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, PlayCircle, Sparkles } from "lucide-react";
-import { DashboardMockup } from "./DashboardMockup";
+import heroVisual from "@/assets/hero_visual.png.asset.json";
+
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -86,15 +87,27 @@ export function Hero() {
           SOC 2 Type II · GDPR · HIPAA ready
         </motion.p>
 
-        {/* Dashboard mockup */}
+        {/* Hero visual */}
         <motion.div
           initial={{ opacity: 0, y: 60, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.8, duration: 1.1, ease }}
           className="relative mt-20"
         >
-          <DashboardMockup />
+          <img
+            src={heroVisual.url}
+            alt="Techies LLM observability data flow visualization"
+            className="mx-auto h-auto w-full max-w-6xl select-none"
+            style={{
+              maskImage:
+                "radial-gradient(ellipse 90% 80% at 50% 50%, black 60%, transparent 100%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 90% 80% at 50% 50%, black 60%, transparent 100%)",
+            }}
+            draggable={false}
+          />
         </motion.div>
+
       </div>
     </section>
   );
