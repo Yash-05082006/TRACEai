@@ -1,0 +1,136 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.984 0.005 247);
+  --foreground: oklch(0.18 0.04 265);
+  --surface: oklch(1 0 0);
+  --ink: oklch(0.18 0.04 265);
+  --ink-soft: oklch(0.55 0.03 257);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.04 265);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.04 265);
+  --primary: oklch(0.55 0.22 264);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.968 0.007 247);
+  --secondary-foreground: oklch(0.18 0.04 265);
+  --muted: oklch(0.968 0.007 247);
+  --muted-foreground: oklch(0.55 0.03 257);
+  --accent: oklch(0.55 0.22 264);
+  --accent-foreground: oklch(0.99 0 0);
+  --success: oklch(0.72 0.17 162);
+  --warning: oklch(0.78 0.16 75);
+  --danger: oklch(0.65 0.22 27);
+  --destructive: oklch(0.65 0.22 27);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.18 0.04 265 / 0.08);
+  --input: oklch(0.18 0.04 265 / 0.12);
+  --ring: oklch(0.55 0.22 264);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html, body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "cv11", "ss01", "ss03";
+  }
+}
+
+@utility glass {
+  background: color-mix(in oklab, white 70%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid color-mix(in oklab, #0F172A 8%, transparent);
+}
+@utility glass-strong {
+  background: color-mix(in oklab, white 85%, transparent);
+  backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid color-mix(in oklab, #0F172A 10%, transparent);
+}
+@utility soft-shadow {
+  box-shadow:
+    0 1px 0 0 rgba(15,23,42,0.04),
+    0 8px 24px -8px rgba(15,23,42,0.10),
+    0 24px 60px -20px rgba(37,99,235,0.18);
+}
+@utility lift-shadow {
+  box-shadow:
+    0 1px 0 0 rgba(15,23,42,0.04),
+    0 20px 50px -16px rgba(15,23,42,0.18),
+    0 40px 100px -30px rgba(37,99,235,0.25);
+}
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(15,23,42,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15,23,42,0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
+}
+@utility noise {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.04;
+}
+@utility text-gradient {
+  background: linear-gradient(135deg, #0F172A 0%, #2563EB 60%, #0EA5E9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.85; }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes data-rise {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
