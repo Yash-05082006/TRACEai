@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { Bell, Settings, User, Activity } from "lucide-react";
+import { Activity, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -71,15 +72,14 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-1.5">
-            <IconButton><Bell className="h-4 w-4" /></IconButton>
-            <IconButton><Settings className="h-4 w-4" /></IconButton>
-            <div className="ml-2 flex items-center gap-2 rounded-full border border-[#0F172A]/8 bg-white/70 py-1 pl-1 pr-3">
-              <div className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#0EA5E9] text-white">
-                <User className="h-3.5 w-3.5" />
-              </div>
-              <span className="text-[12px] font-medium text-[#0F172A]">Aria</span>
-            </div>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F172A] px-3.5 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-[#0F172A]/90"
+            >
+              Open Platform
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </div>
       </motion.div>
@@ -87,10 +87,3 @@ export function Navbar() {
   );
 }
 
-function IconButton({ children }: { children: React.ReactNode }) {
-  return (
-    <button className="grid h-9 w-9 place-items-center rounded-lg text-[#475569] transition-all hover:bg-[#0F172A]/[0.05] hover:text-[#0F172A] active:scale-95">
-      {children}
-    </button>
-  );
-}
