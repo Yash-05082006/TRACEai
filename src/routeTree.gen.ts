@@ -9,8 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LogsRouteImport } from './routes/logs'
+import { Route as IntegrationsRouteImport } from './routes/integrations'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CostOptimizerRouteImport } from './routes/cost-optimizer'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 
+const LogsRoute = LogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegrationsRoute = IntegrationsRouteImport.update({
+  id: '/integrations',
+  path: '/integrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CostOptimizerRoute = CostOptimizerRouteImport.update({
+  id: '/cost-optimizer',
+  path: '/cost-optimizer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +49,102 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/cost-optimizer': typeof CostOptimizerRoute
+  '/dashboard': typeof DashboardRoute
+  '/integrations': typeof IntegrationsRoute
+  '/logs': typeof LogsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/cost-optimizer': typeof CostOptimizerRoute
+  '/dashboard': typeof DashboardRoute
+  '/integrations': typeof IntegrationsRoute
+  '/logs': typeof LogsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/cost-optimizer': typeof CostOptimizerRoute
+  '/dashboard': typeof DashboardRoute
+  '/integrations': typeof IntegrationsRoute
+  '/logs': typeof LogsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/cost-optimizer'
+    | '/dashboard'
+    | '/integrations'
+    | '/logs'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analytics'
+    | '/cost-optimizer'
+    | '/dashboard'
+    | '/integrations'
+    | '/logs'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/cost-optimizer'
+    | '/dashboard'
+    | '/integrations'
+    | '/logs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  CostOptimizerRoute: typeof CostOptimizerRoute
+  DashboardRoute: typeof DashboardRoute
+  IntegrationsRoute: typeof IntegrationsRoute
+  LogsRoute: typeof LogsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/logs': {
+      id: '/logs'
+      path: '/logs'
+      fullPath: '/logs'
+      preLoaderRoute: typeof LogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integrations': {
+      id: '/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof IntegrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cost-optimizer': {
+      id: '/cost-optimizer'
+      path: '/cost-optimizer'
+      fullPath: '/cost-optimizer'
+      preLoaderRoute: typeof CostOptimizerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +157,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  CostOptimizerRoute: CostOptimizerRoute,
+  DashboardRoute: DashboardRoute,
+  IntegrationsRoute: IntegrationsRoute,
+  LogsRoute: LogsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
