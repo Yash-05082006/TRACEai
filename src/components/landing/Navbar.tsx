@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { Bell, Settings, User, Activity } from "lucide-react";
+import { Activity, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 const links = [
   { label: "Features", href: "#features" },
