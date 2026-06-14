@@ -1,7 +1,14 @@
 import { motion, useScroll, useTransform } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 import { Bell, Settings, User, Activity } from "lucide-react";
 
-const links = ["Dashboard", "Analytics", "Integrations", "Logs", "Optimization Agent"];
+const links = [
+  { label: "Dashboard", to: "/dashboard" },
+  { label: "Analytics", to: "/analytics" },
+  { label: "Logs", to: "/logs" },
+  { label: "Cost Optimizer", to: "/cost-optimizer" },
+  { label: "Integrations", to: "/integrations" },
+] as const;
 
 export function Navbar() {
   const { scrollY } = useScroll();
@@ -37,14 +44,14 @@ export function Navbar() {
 
           <nav className="hidden items-center gap-1 md:flex">
             {links.map((l) => (
-              <a
-                key={l}
-                href="#"
-                className="relative rounded-lg px-3 py-2 text-[13px] font-medium text-[#475569] transition-colors hover:text-[#0F172A]"
+              <Link
+                key={l.to}
+                to={l.to}
+                className="relative rounded-lg px-3 py-2 text-[13px] font-medium text-[#475569] transition-colors hover:text-[#0F172A] hover:bg-[#0F172A]/[0.04]"
+                activeProps={{ className: "text-[#0F172A] bg-[#0F172A]/[0.05]" }}
               >
-                <span className="relative z-10">{l}</span>
-                <span className="absolute inset-0 -z-0 rounded-lg bg-[#0F172A]/0 transition-colors hover:bg-[#0F172A]/[0.04]" />
-              </a>
+                {l.label}
+              </Link>
             ))}
           </nav>
 

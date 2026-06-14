@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight, PlayCircle, Sparkles } from "lucide-react";
 import heroVisual from "@/assets/hero_visual.png";
+import { AuraBackground } from "./AuraBackground";
+
 
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -8,6 +10,7 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export function Hero() {
   return (
     <section className="relative pt-20 pb-32">
+      <AuraBackground />
       <div className="mx-auto max-w-7xl px-6">
         {/* eyebrow */}
         <motion.div
