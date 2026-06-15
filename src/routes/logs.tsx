@@ -57,6 +57,7 @@ type Status = 200 | 201 | 400 | 401 | 429 | 500 | 504;
 type Req = {
   id: string;
   ts: string;
+  tsOffsetHours: number; // hours ago from "now" for time filter simulation
   provider: "OpenAI" | "Anthropic" | "Google" | "DeepSeek" | "Groq";
   model: string;
   inTok: number;
@@ -80,7 +81,8 @@ type Req = {
 const REQS: Req[] = [
   {
     id: "req_8af21c",
-    ts: "2026-06-14 14:32:18.412",
+    ts: "2026-06-15 11:32:18",
+    tsOffsetHours: 0.5,
     provider: "OpenAI",
     model: "gpt-4o",
     inTok: 1248,
@@ -108,7 +110,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af21b",
-    ts: "2026-06-14 14:32:18.108",
+    ts: "2026-06-15 10:58:14",
+    tsOffsetHours: 1.2,
     provider: "Anthropic",
     model: "claude-sonnet-4-5",
     inTok: 842,
@@ -136,7 +139,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af21a",
-    ts: "2026-06-14 14:32:17.984",
+    ts: "2026-06-15 10:12:10",
+    tsOffsetHours: 2.1,
     provider: "OpenAI",
     model: "gpt-4o-mini",
     inTok: 312,
@@ -164,7 +168,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af219",
-    ts: "2026-06-14 14:32:17.622",
+    ts: "2026-06-15 09:45:42",
+    tsOffsetHours: 2.8,
     provider: "OpenAI",
     model: "text-embedding-3-small",
     inTok: 1840,
@@ -190,7 +195,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af218",
-    ts: "2026-06-14 14:32:17.401",
+    ts: "2026-06-15 08:20:05",
+    tsOffsetHours: 4.2,
     provider: "Anthropic",
     model: "claude-sonnet-4-5",
     inTok: 3420,
@@ -218,7 +224,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af217",
-    ts: "2026-06-14 14:32:16.940",
+    ts: "2026-06-15 06:48:11",
+    tsOffsetHours: 5.8,
     provider: "OpenAI",
     model: "gpt-4o",
     inTok: 642,
@@ -244,7 +251,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af216",
-    ts: "2026-06-14 14:32:16.512",
+    ts: "2026-06-14 23:15:08",
+    tsOffsetHours: 13.4,
     provider: "Google",
     model: "gemini-1.5-pro",
     inTok: 2840,
@@ -272,7 +280,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af215",
-    ts: "2026-06-14 14:32:16.198",
+    ts: "2026-06-14 19:02:44",
+    tsOffsetHours: 17.5,
     provider: "Anthropic",
     model: "claude-haiku-4-5",
     inTok: 184,
@@ -301,7 +310,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af214",
-    ts: "2026-06-14 14:32:15.820",
+    ts: "2026-06-14 14:22:10",
+    tsOffsetHours: 22.2,
     provider: "OpenAI",
     model: "gpt-4o",
     inTok: 4820,
@@ -327,7 +337,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af213",
-    ts: "2026-06-14 14:32:15.412",
+    ts: "2026-06-13 21:10:50",
+    tsOffsetHours: 38.5,
     provider: "DeepSeek",
     model: "deepseek-v3",
     inTok: 1240,
@@ -355,7 +366,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af212",
-    ts: "2026-06-14 14:32:14.998",
+    ts: "2026-06-13 08:45:00",
+    tsOffsetHours: 51.2,
     provider: "OpenAI",
     model: "gpt-4o-mini",
     inTok: 240,
@@ -384,7 +396,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af211",
-    ts: "2026-06-14 14:32:14.610",
+    ts: "2026-06-12 04:18:35",
+    tsOffsetHours: 80.0,
     provider: "Anthropic",
     model: "claude-sonnet-4-5",
     inTok: 980,
@@ -410,7 +423,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af210",
-    ts: "2026-06-14 14:32:14.212",
+    ts: "2026-06-10 15:20:00",
+    tsOffsetHours: 165.0,
     provider: "Groq",
     model: "llama-3.3-70b",
     inTok: 520,
@@ -439,7 +453,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af20f",
-    ts: "2026-06-14 14:32:13.840",
+    ts: "2026-06-08 10:10:22",
+    tsOffsetHours: 218.0,
     provider: "OpenAI",
     model: "gpt-4o",
     inTok: 2140,
@@ -467,7 +482,8 @@ const REQS: Req[] = [
   },
   {
     id: "req_8af20e",
-    ts: "2026-06-14 14:32:13.410",
+    ts: "2026-06-01 08:00:00",
+    tsOffsetHours: 723.0,
     provider: "Google",
     model: "gemini-2.0-flash",
     inTok: 380,
@@ -583,7 +599,10 @@ function RequestExplorerPage() {
     [providerFilter],
   );
 
+  const timeFilterHours = { "1h": 1, "6h": 6, "24h": 24, "7d": 168, "30d": 720 }[timeFilter] ?? 24;
+
   const rows = REQS.filter((r) => {
+    if (r.tsOffsetHours > timeFilterHours) return false;
     if (statusFilter === "success" && r.status >= 400) return false;
     if (statusFilter === "error" && r.status < 400) return false;
     if (providerFilter !== "all" && r.provider !== providerFilter) return false;
@@ -598,7 +617,7 @@ function RequestExplorerPage() {
   });
 
   const hasActiveFilters =
-    q || statusFilter !== "all" || providerFilter !== "all" || modelFilter !== "all";
+    q || statusFilter !== "all" || providerFilter !== "all" || modelFilter !== "all" || timeFilter !== "24h";
 
   return (
     <AppShell
@@ -708,6 +727,7 @@ function RequestExplorerPage() {
                 setStatusFilter("all");
                 setProviderFilter("all");
                 setModelFilter("all");
+                setTimeFilter("24h");
               }}
               className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium text-[#94A3B8] hover:bg-[#0F172A]/[0.04] hover:text-[#475569]"
             >
@@ -724,18 +744,14 @@ function RequestExplorerPage() {
             <thead>
               <tr className="border-b border-[#0F172A]/8 bg-[#F8FAFC]">
                 {[
-                  { label: "Timestamp", align: "left" },
-                  { label: "Request ID", align: "left" },
-                  { label: "Provider", align: "left" },
-                  { label: "Model", align: "left" },
-                  { label: "Tokens", align: "right", tooltip: "Sum of input and output tokens" },
-                  {
-                    label: "Cost",
-                    align: "right",
-                    tooltip: "Estimated cost based on model pricing",
-                  },
-                  { label: "Latency", align: "right", tooltip: "End-to-end response time" },
-                  { label: "Status", align: "left" },
+                  { label: "Timestamp", align: "left", tooltip: "When the request was received by the TRACEai proxy (UTC). Used for time-range filtering." },
+                  { label: "Request ID", align: "left", tooltip: "Unique identifier assigned by TRACEai to every captured request. Use for debugging and tracing." },
+                  { label: "Provider", align: "left", tooltip: "The upstream LLM provider this request was forwarded to (e.g., OpenAI, Anthropic, Google)." },
+                  { label: "Model", align: "left", tooltip: "The specific model variant called. More capable models cost more per token." },
+                  { label: "Tokens", align: "right", tooltip: "Total tokens = Input tokens + Output tokens. Input tokens are your prompt; output tokens are the model's response. Drives cost." },
+                  { label: "Cost", align: "right", tooltip: "Estimated cost calculated as (input_tokens × input_price + output_tokens × output_price) for the selected model." },
+                  { label: "Latency", align: "right", tooltip: "Total round-trip time from proxy receiving the request to returning the full response. Includes network overhead and model generation time." },
+                  { label: "Status", align: "left", tooltip: "HTTP response code. 2xx = success, 429 = rate limited (too many requests), 5xx = server error." },
                   { label: "", align: "right" },
                 ].map((h) => (
                   <th
@@ -744,8 +760,12 @@ function RequestExplorerPage() {
                       h.align === "right" ? "text-right" : "text-left"
                     }`}
                   >
-                    {h.label}
-                    {h.tooltip && <InfoTooltip content={h.tooltip} />}
+                    <span className={`inline-flex items-center gap-1 ${
+                      h.align === "right" ? "flex-row-reverse" : ""
+                    }`}>
+                      {h.label}
+                      {h.tooltip && <InfoTooltip content={h.tooltip} />}
+                    </span>
                   </th>
                 ))}
               </tr>

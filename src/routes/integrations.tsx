@@ -216,8 +216,9 @@ function IntegrationsPage() {
                   />
                 </label>
                 <label className="block">
-                  <div className="mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">
-                    Upstream Provider URL
+                  <div className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8]">
+                    Upstream Provider Base URL
+                    <InfoTooltip content="The upstream API endpoint that TRACEai proxies traffic to. This is the base_url of the provider SDK (not the proxy URL). TRACEai sits between your app and this URL." />
                   </div>
                   <input
                     value={baseUrl}
@@ -225,6 +226,11 @@ function IntegrationsPage() {
                     className="w-full rounded-lg border border-[#0F172A]/10 bg-white px-3 py-2 text-[13px] font-mono focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/15 focus:outline-none"
                   />
                 </label>
+                <div className="flex items-start gap-2 rounded-lg border border-[#0F172A]/8 bg-[#F8FAFC] px-3 py-2.5">
+                  <span className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] shrink-0">Telemetry</span>
+                  <InfoTooltip content="TRACEai captures: request/response bodies, token counts, latency, TTFT, status codes, and user/session IDs. Your provider API key is never stored — it passes through in-flight only." />
+                  <span className="text-[12px] text-[#64748B]">Captures request metadata, tokens, cost, and latency. Your API key is never stored.</span>
+                </div>
               </div>
               <div className="mt-4 flex gap-3 rounded-lg border border-emerald-200 bg-emerald-50/50 p-3 text-[12px] text-emerald-800">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />

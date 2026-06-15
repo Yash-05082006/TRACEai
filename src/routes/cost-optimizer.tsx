@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell, Card } from "@/components/app/AppShell";
 import { InfoTooltip } from "@/components/ui/tooltip";
-import { Sparkles, TrendingDown, ArrowRight, ShieldAlert, FileText, Activity } from "lucide-react";
+import { Sparkles, TrendingDown, ArrowRight, ShieldAlert, FileText, Activity, RefreshCw, CheckCircle, X } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/cost-optimizer")({
@@ -137,16 +137,70 @@ const riskStyles: Record<RiskLevel, { badge: string; iconColor: string }> = {
 
 function OptimizerPage() {
   const [filter, setFilter] = useState<"all" | RiskLevel>("all");
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
+  const [applied, setApplied] = useState<Set<string>>(new Set());
+  const [rerunning, setRerunning] = useState(false);
+  const [rerunSuccess, setRerunSuccess] = useState(false);
+  const [detailOpen, setDetailOpen] = useState<string | null>(null);
+  const [pendingApply, setPendingApply] = useState<string | null>(null);
+  const [undoId, setUndoId] = useState<string | null>(null);
+
+  const handleRerun = () => {
+    setRerunning(true);
+    setRerunSuccess(false);
+    setTimeout(() => {
+      setRerunning(false);
+      setRerunSuccess(true);
+      setTimeout(() => setRerunSuccess(false), 3000);
+    }, 2200);
+  };
+
+  const handleDismiss = (id: string) => {
+    setDismissed(prev => new Set([...prev, id]));
+    setUndoId(id);
+    setTimeout(() => setUndoId(prev => prev === id ? null : prev), 5000);
+  };
+
+  const handleUndo = (id: string) => {
+    setDismissed(prev => { const next = new Set(prev); next.delete(id); return next; });
+    setUndoId(null);
+  };
+
+  const handleApplyConfirm = (id: string) => {
+    setPendingApply(id);
+  };
+
+  const handleApplyFinal = (id: string) => {
+    setApplied(prev => new Set([...prev, id]));
+    setPendingApply(null);
+  };
+
   const rows = RECS.filter((r) => filter === "all" || r.risk === filter);
+  const visibleRows = rows.filter(r => !dismissed.has(r.id));
 
   return (
     <AppShell
       title="Optimization Agent"
       subtitle="AI-generated, telemetry-grounded recommendations to reduce LLM spend without sacrificing quality."
       actions={
-        <button className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F172A] px-3 py-2 text-[12px] font-semibold text-white hover:bg-[#0F172A]/90 transition-colors">
-          <Sparkles className="h-3.5 w-3.5" /> Re-run analysis
-        </button>
+        <div className="flex items-center gap-3">
+          {rerunSuccess && (
+            <span className="text-[12px] font-medium text-emerald-600 flex items-center gap-1">
+              <CheckCircle className="h-3.5 w-3.5" /> Analysis updated
+            </span>
+          )}
+          <button
+            onClick={handleRerun}
+            disabled={rerunning}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#0F172A] px-3 py-2 text-[12px] font-semibold text-white hover:bg-[#0F172A]/90 transition-colors disabled:opacity-60"
+          >
+            {rerunning ? (
+              <><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Analyzing…</>
+            ) : (
+              <><Sparkles className="h-3.5 w-3.5" /> Re-run analysis</>
+            )}
+          </button>
+        </div>
       }
     >
       {/* Top Stats */}
@@ -193,30 +247,62 @@ function OptimizerPage() {
         </Card>
       </div>
 
-      <div className="mt-8 mb-4 flex items-center justify-between border-b border-[#0F172A]/8 pb-4">
+      <div className="mt-6 mb-4 flex items-center justify-between border-b border-[#0F172A]/8 pb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-[16px] font-semibold tracking-tight text-[#0F172A]">
             Actionable Recommendations
           </h2>
           <InfoTooltip content="Analyzed based on your live telemetry using our multi-agent architecture." />
+          <span className="ml-1 rounded-full bg-[#0F172A]/[0.06] px-2 py-0.5 text-[11px] font-semibold text-[#475569]">
+            {visibleRows.length}
+          </span>
         </div>
         <div className="inline-flex rounded-lg border border-[#0F172A]/8 bg-white p-0.5">
           {(["all", "Low", "Medium", "High"] as const).map((c) => (
             <button
               key={c}
               onClick={() => setFilter(c)}
-              className={`rounded-md px-3 py-1 text-[12px] font-medium ${
-                filter === c ? "bg-[#0F172A] text-white" : "text-[#64748B] hover:text-[#0F172A]"
+              className={`rounded-md px-3 py-1 text-[12px] font-medium transition-colors ${
+                filter === c
+                  ? c === "Low"
+                    ? "bg-emerald-600 text-white"
+                    : c === "Medium"
+                      ? "bg-amber-500 text-white"
+                      : c === "High"
+                        ? "bg-red-500 text-white"
+                        : "bg-[#0F172A] text-white"
+                  : "text-[#64748B] hover:text-[#0F172A]"
               }`}
             >
-              {c === "all" ? "All Risks" : `${c} Risk`}
+              {c === "all" ? "All" : `${c} Risk`}
             </button>
           ))}
         </div>
       </div>
 
+      {undoId && (
+        <div className="mb-4 flex items-center justify-between rounded-lg bg-[#0F172A] px-4 py-3 text-[13px] text-white shadow-lg">
+          <span>Recommendation dismissed.</span>
+          <button
+            onClick={() => handleUndo(undoId)}
+            className="font-semibold underline hover:no-underline"
+          >
+            Undo
+          </button>
+        </div>
+      )}
+
       <div className="space-y-4">
-        {rows.map((r) => (
+        {visibleRows.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="grid h-14 w-14 place-items-center rounded-2xl border border-[#0F172A]/8 bg-white shadow-sm">
+              <Sparkles className="h-6 w-6 text-[#94A3B8]" />
+            </div>
+            <p className="mt-4 text-[14px] font-semibold text-[#0F172A]">No recommendations match this filter</p>
+            <p className="mt-1 text-[12px] text-[#64748B]">Try a different risk level or re-run the analysis.</p>
+          </div>
+        )}
+        {visibleRows.map((r) => (
           <Card key={r.id} className="p-0 overflow-hidden">
             {/* Header Area */}
             <div className="flex items-start justify-between gap-3 p-5 border-b border-[#0F172A]/8 bg-[#F8FAFC]/50">
@@ -342,21 +428,61 @@ function OptimizerPage() {
             </div>
 
             {/* Footer Area */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#0F172A]/8 px-5 py-4 bg-[#F8FAFC]">
-              <div className="flex items-center gap-2 text-[12px]">
-                <button className="inline-flex items-center gap-1.5 font-medium text-[#2563EB] hover:underline">
-                  <FileText className="h-3.5 w-3.5" /> View Detailed Analysis
-                </button>
+            {applied.has(r.id) ? (
+              <div className="flex items-center gap-3 border-t border-[#0F172A]/8 px-5 py-4 bg-emerald-50">
+                <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0" />
+                <div>
+                  <p className="text-[13px] font-semibold text-emerald-800">Fix Applied Successfully</p>
+                  <p className="text-[11px] text-emerald-700">This optimization is now active. You should see cost reduction within 24–48 hours.</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
-                <button className="flex-1 sm:flex-none rounded-lg border border-[#0F172A]/10 bg-white px-4 py-2 text-[13px] font-semibold text-[#475569] hover:bg-[#F8FAFC] transition-colors">
-                  Dismiss
-                </button>
-                <button className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#2563EB] px-5 py-2 text-[13px] font-semibold text-white hover:bg-[#2563EB]/90 transition-colors shadow-sm">
-                  Apply Fix <ArrowRight className="h-4 w-4" />
-                </button>
+            ) : pendingApply === r.id ? (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#0F172A]/8 px-5 py-4 bg-amber-50">
+                <div className="text-[13px] text-amber-900">
+                  <span className="font-semibold">Confirm:</span> Apply the fix for <span className="font-mono text-[11px] bg-amber-100 px-1 rounded">{r.affects}</span>? This will update your routing configuration.
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <button onClick={() => setPendingApply(null)} className="rounded-lg border border-amber-300 bg-white px-4 py-2 text-[12px] font-semibold text-amber-700 hover:bg-amber-50 transition-colors">
+                    Cancel
+                  </button>
+                  <button onClick={() => handleApplyFinal(r.id)} className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-5 py-2 text-[12px] font-semibold text-white hover:bg-emerald-700 transition-colors shadow-sm">
+                    <CheckCircle className="h-4 w-4" /> Confirm Apply
+                  </button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#0F172A]/8 px-5 py-4 bg-[#F8FAFC]">
+                <div className="flex items-center gap-2 text-[12px]">
+                  <button onClick={() => setDetailOpen(detailOpen === r.id ? null : r.id)} className="inline-flex items-center gap-1.5 font-medium text-[#2563EB] hover:underline">
+                    <FileText className="h-3.5 w-3.5" /> {detailOpen === r.id ? 'Hide' : 'View'} Detailed Analysis
+                  </button>
+                </div>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <button onClick={() => handleDismiss(r.id)} className="flex-1 sm:flex-none rounded-lg border border-[#0F172A]/10 bg-white px-4 py-2 text-[13px] font-semibold text-[#475569] hover:bg-[#F8FAFC] transition-colors">
+                    Dismiss
+                  </button>
+                  <button onClick={() => handleApplyConfirm(r.id)} className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#2563EB] px-5 py-2 text-[13px] font-semibold text-white hover:bg-[#2563EB]/90 transition-colors shadow-sm">
+                    Apply Fix <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+            {detailOpen === r.id && (
+              <div className="border-t border-[#0F172A]/8 bg-[#F8FAFC] px-5 py-5 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-[12px] font-bold uppercase tracking-wider text-[#0F172A]">Detailed Analysis Report</h4>
+                  <button onClick={() => setDetailOpen(null)} className="text-[#94A3B8] hover:text-[#0F172A]"><X className="h-4 w-4" /></button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[12px]">
+                  <div><p className="font-semibold text-[#64748B] mb-1">Evidence</p><p className="text-[#0F172A] leading-relaxed">{r.evidence}</p></div>
+                  <div><p className="font-semibold text-[#64748B] mb-1">Reasoning</p><p className="text-[#0F172A] leading-relaxed">{r.reasoning}</p></div>
+                  <div><p className="font-semibold text-[#64748B] mb-1">Sample Size</p><p className="font-mono text-[#0F172A]">{r.sampleSize}</p></div>
+                  <div><p className="font-semibold text-[#64748B] mb-1">Quality Impact</p><p className="text-[#0F172A]">{r.qualityImpact}</p></div>
+                  <div><p className="font-semibold text-[#64748B] mb-1">Savings Math</p><p className="font-mono text-[11px] text-[#0F172A] bg-white border border-[#0F172A]/8 px-2 py-1 rounded">{r.calculationDetails}</p></div>
+                  <div><p className="font-semibold text-[#64748B] mb-1">Confidence Factors</p><ul className="list-disc pl-4 space-y-0.5">{r.confidenceFactors.map((f,i) => <li key={i} className="text-[#0F172A]">{f}</li>)}</ul></div>
+                </div>
+              </div>
+            )}
           </Card>
         ))}
       </div>
