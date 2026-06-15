@@ -8,6 +8,7 @@ const integrations = [
   { name: "Meta Llama", desc: "Llama 3, 3.1, 4 Maverick", color: "#0668E1", letter: "L" },
   { name: "DeepSeek", desc: "DeepSeek-V3, R1, Coder", color: "#1D4ED8", letter: "D" },
   { name: "Azure OpenAI", desc: "Enterprise GPT-4o, o1", color: "#0078D4", letter: "A" },
+  { name: "OpenRouter", desc: "Access to 100+ open-source models", color: "#8B5CF6", letter: "O" },
 ];
 
 export function Integrations() {

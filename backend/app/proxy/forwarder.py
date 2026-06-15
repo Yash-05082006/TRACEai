@@ -19,6 +19,8 @@ _OPENAI_REQUEST_HEADERS = frozenset(
         "user-agent",
         "openai-organization",
         "openai-project",
+        "http-referer",
+        "x-title",
     }
 )
 
@@ -141,8 +143,14 @@ async def forward_chat_completion(
             raise ValueError("GEMINI_API_KEY is not configured on the server")
         return await _forward_gemini(body=body, gemini_api_key=gemini_api_key, timeout=timeout)
 
-    if normalized == "openai":
-        base_url = upstream_base_url or "https://api.openai.com/v1"
+    if normalized in {"openai", "openrouter", "deepseek"}:
+        if normalized == "openrouter":
+            base_url = upstream_base_url or "https://openrouter.ai/api/v1"
+        elif normalized == "deepseek":
+            base_url = upstream_base_url or "https://api.deepseek.com/v1"
+        else:
+            base_url = upstream_base_url or "https://api.openai.com/v1"
+
         return await _forward_openai(
             upstream_base_url=base_url,
             body=body,

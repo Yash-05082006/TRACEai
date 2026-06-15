@@ -70,6 +70,13 @@ const PROVIDERS = [
     color: "#4D6BFE",
     letter: "D",
   },
+  {
+    id: "openrouter",
+    name: "OpenRouter",
+    base: "https://openrouter.ai/api/v1",
+    color: "#8B5CF6",
+    letter: "O",
+  },
 ];
 
 function IntegrationsPage() {
@@ -81,10 +88,14 @@ function IntegrationsPage() {
 
   const [verifyChecks, setVerifyChecks] = useState([false, false, false]);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isCreatingApp, setIsCreatingApp] = useState(false);
+  const [persistedProxyKey, setPersistedProxyKey] = useState<string | null>(null);
 
   const provider = PROVIDERS.find((p) => p.id === providerId);
-  const proxyUrl = `https://proxy.traceai.dev/${providerId}/${label || "default"}`;
-  const proxyKey = `trace_sk_live_${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`;
+  const localApiBase = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") || "http://127.0.0.1:8004";
+  const proxyUrl = `${localApiBase}/proxy/v1`;
+  const [mockProxyKey] = useState(() => `trace_sk_live_${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`);
+  const proxyKey = persistedProxyKey || mockProxyKey;
 
   const canAdvance =
     (step === 1 && !!provider) ||
@@ -92,8 +103,41 @@ function IntegrationsPage() {
     step === 3 ||
     (step === 4 && verifyChecks[2]);
 
-  function next() {
-    setStep((s) => Math.min(4, s + 1));
+  async function handleNext() {
+    if (step === 2) {
+      setIsCreatingApp(true);
+      try {
+        const response = await fetch(`${localApiBase}/applications`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            application_name: label || "default",
+            provider: providerId,
+            default_model: null,
+            upstream_base_url: baseUrl,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        if (data && data.trace_key) {
+          setPersistedProxyKey(data.trace_key);
+        }
+        setStep(3);
+      } catch (err) {
+        console.error("Failed to create application:", err);
+        alert(`Failed to register integration: ${err instanceof Error ? err.message : String(err)}`);
+      } finally {
+        setIsCreatingApp(false);
+      }
+    } else {
+      setStep((s) => Math.min(4, s + 1));
+    }
   }
 
   function startVerification() {
@@ -386,11 +430,19 @@ const response = await client.chat.completions.create(...);`}</pre>
             </button>
             {step < 4 && (
               <button
-                onClick={next}
-                disabled={!canAdvance}
+                onClick={handleNext}
+                disabled={!canAdvance || isCreatingApp}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-[#2563EB] px-4 py-2 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[#2563EB]/90 shadow-sm"
               >
-                Continue <ArrowRight className="h-4 w-4" />
+                {isCreatingApp ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin shrink-0" /> Registering...
+                  </>
+                ) : (
+                  <>
+                    Continue <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
               </button>
             )}
           </div>

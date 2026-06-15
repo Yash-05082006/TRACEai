@@ -41,11 +41,12 @@ async def proxy_chat_completions(
         raise HTTPException(status_code=400, detail="Invalid x-trace-key — application not found")
 
     provider = normalize_provider(application.provider)
+    openai_compatible = {"openai", "openrouter", "deepseek"}
 
-    if provider == "openai" and not request.headers.get("authorization"):
+    if provider in openai_compatible and not request.headers.get("authorization"):
         raise HTTPException(
             status_code=400,
-            detail="Missing Authorization header — OpenAI API key required",
+            detail=f"Missing Authorization header — {provider.title()} API key required",
         )
 
     if provider == "google" and not settings.gemini_api_key:
@@ -54,10 +55,10 @@ async def proxy_chat_completions(
             detail="GEMINI_API_KEY is not configured on the server — add it to backend/.env and restart",
         )
 
-    if provider not in {"openai", "google"}:
+    if provider not in openai_compatible and provider != "google":
         raise HTTPException(
             status_code=400,
-            detail=f"Unsupported provider '{application.provider}'. Supported: openai, google, gemini",
+            detail=f"Unsupported provider '{application.provider}'. Supported: openai, google, openrouter, deepseek",
         )
 
     body = await request.body()

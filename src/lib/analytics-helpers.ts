@@ -5,6 +5,7 @@ const PROVIDER_LABELS: Record<string, string> = {
   anthropic: "Anthropic",
   google: "Google Gemini",
   deepseek: "DeepSeek",
+  openrouter: "OpenRouter",
   gemini: "Google Gemini",
 };
 
@@ -14,6 +15,7 @@ const PROVIDER_TO_API: Record<string, string> = {
   Google: "google",
   "Google Gemini": "google",
   DeepSeek: "deepseek",
+  OpenRouter: "openrouter",
 };
 
 export function providerLabel(provider: string) {
@@ -176,6 +178,7 @@ export const PROVIDER_COLORS: Record<string, string> = {
   Google: "bg-[#4285F4]/10 text-[#4285F4]",
   "Google Gemini": "bg-[#4285F4]/10 text-[#4285F4]",
   DeepSeek: "bg-[#4D6BFE]/10 text-[#4D6BFE]",
+  OpenRouter: "bg-[#8B5CF6]/10 text-[#8B5CF6]",
 };
 
 export const COST_DRIVER_COLORS = [

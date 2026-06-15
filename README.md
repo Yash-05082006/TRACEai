@@ -131,7 +131,7 @@ flowchart TB
 
     subgraph traceai [TRACEai Platform]
         FE[TanStack Start Frontend<br/>port 8080]
-        API[FastAPI Backend<br/>port 8000]
+        API[FastAPI Backend<br/>port 8004]
         PROXY[LLM Proxy Router<br/>/proxy/v1/*]
         AGENT[Optimization Agent]
         ANALYTICS[Analytics Engine]
@@ -401,7 +401,7 @@ erDiagram
 
 ## 9. API Documentation
 
-Base URL: `http://localhost:8000/api/v1`
+Base URL: `http://localhost:8004/api/v1`
 
 All authenticated endpoints require: `Authorization: Bearer <jwt>`
 
@@ -462,7 +462,7 @@ All authenticated endpoints require: `Authorization: Bearer <jwt>`
   "id": "uuid",
   "application_name": "production",
   "provider": "openai",
-  "proxy_url": "http://localhost:8000/proxy/v1",
+  "proxy_url": "http://localhost:8004/proxy/v1",
   "trace_key": "trace_sk_live_...",
   "created_at": "2026-06-15T00:00:00Z"
 }
@@ -817,7 +817,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 alembic upgrade head
 python scripts/seed_demo_data.py   # optional demo telemetry
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8004
 
 # 4. Frontend (separate terminal)
 cd techies-ai-insights
@@ -837,8 +837,8 @@ Open [http://localhost:8080/dashboard](http://localhost:8080/dashboard) — plat
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `VITE_API_BASE_URL` | Yes | Backend URL, e.g. `http://localhost:8000/api/v1` |
-| `VITE_PROXY_BASE_URL` | Yes | Proxy URL shown in integrations, e.g. `http://localhost:8000/proxy/v1` |
+| `VITE_API_BASE_URL` | Yes | Backend URL, e.g. `http://localhost:8004/api/v1` |
+| `VITE_PROXY_BASE_URL` | Yes | Proxy URL shown in integrations, e.g. `http://localhost:8004/proxy/v1` |
 | `NODE_ENV` | No | `development` \| `production` |
 
 ### Backend (`backend/.env`)
@@ -896,10 +896,10 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 alembic upgrade head
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8004
 ```
 
-API docs (auto-generated): [http://localhost:8000/docs](http://localhost:8000/docs)
+API docs (auto-generated): [http://localhost:8004/docs](http://localhost:8004/docs)
 
 ---
 
@@ -998,7 +998,7 @@ _Update this table with actual team member names before submission._
 3. Verify proxy captures a test request:
 
 ```bash
-curl -X POST http://localhost:8000/proxy/v1/chat/completions \
+curl -X POST http://localhost:8004/proxy/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "x-trace-key: trace_sk_demo_..." \
   -H "Authorization: Bearer $OPENAI_API_KEY" \

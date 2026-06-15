@@ -1,4 +1,8 @@
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "http://127.0.0.1:8000";
+const envUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "");
+const API_BASE = envUrl ?? "http://127.0.0.1:8004";
+
+console.log(`[STARTUP] Resolved API_BASE: ${API_BASE}`);
+console.log(`[STARTUP] Source: ${envUrl ? "env (VITE_API_URL)" : "fallback (default 127.0.0.1:8004)"}`);
 
 export class ApiError extends Error {
   status: number;
