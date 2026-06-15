@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
-  Activity,
   BarChart3,
   LayoutDashboard,
   Plug,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import logoAsset from "@/assets/Logo.png";
 
 const nav = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -49,18 +49,12 @@ export function AppShell({
           <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-[220px] shrink-0 flex-col rounded-2xl border border-[#0F172A]/8 bg-white/80 backdrop-blur-xl lg:flex" style={{ padding: "0" }}>
             {/* Logo */}
             <div className="px-4 pt-5 pb-4 border-b border-[#0F172A]/6">
-              <Link to="/" className="flex items-center gap-2.5">
-                <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#0F172A] text-white shadow-sm">
-                  <Activity className="h-4 w-4" />
-                </div>
-                <div>
-                  <div className="text-[14px] font-bold tracking-tight text-[#0F172A] leading-none">
-                    TRACEai
-                  </div>
-                  <div className="mt-0.5 text-[9px] font-semibold uppercase tracking-widest text-[#94A3B8]">
-                    LLM Observability
-                  </div>
-                </div>
+              <Link to="/" className="flex items-center group">
+                <img 
+                  src={logoAsset} 
+                  alt="TRACEai Logo" 
+                  className="h-[38px] w-auto transition-transform duration-200 group-hover:scale-[1.02]" 
+                />
               </Link>
             </div>
 

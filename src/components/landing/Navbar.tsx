@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { Activity, ArrowRight, Bell, Settings, User } from "lucide-react";
+import { ArrowRight, Bell, Settings, User } from "lucide-react";
 import { useState } from "react";
+import logoAsset from "@/assets/Logo.png";
 
 const links = [
   { label: "Features", href: "#features" },
@@ -46,14 +47,13 @@ export function Navbar() {
         className="border-b backdrop-blur-xl backdrop-saturate-150"
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <a href="#hero" className="flex items-center gap-2 group">
-            <div className="relative grid h-9 w-9 place-items-center rounded-xl bg-[#0F172A] text-white">
-              <Activity className="h-4 w-4" />
-              <div className="absolute inset-0 rounded-xl ring-1 ring-white/10" />
-              <div className="absolute -inset-1 -z-10 rounded-2xl bg-[#2563EB]/30 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <span className="text-[15px] font-semibold tracking-tight text-[#0F172A]">TRACEai</span>
-          </a>
+          <Link to="/" className="flex items-center group">
+            <img 
+              src={logoAsset} 
+              alt="TRACEai Logo" 
+              className="h-[38px] w-auto transition-transform duration-200 group-hover:scale-[1.02]" 
+            />
+          </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
             {links.map((l) => (
