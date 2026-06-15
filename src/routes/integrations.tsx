@@ -16,7 +16,7 @@ import {
 export const Route = createFileRoute("/integrations")({
   head: () => ({
     meta: [
-      { title: "Integrations — TRACEai" },
+      { title: "TRACEAI | Integrations" },
       {
         name: "description",
         content:
@@ -228,7 +228,7 @@ function IntegrationsPage() {
                 </label>
                 <div className="flex items-start gap-2 rounded-lg border border-[#0F172A]/8 bg-[#F8FAFC] px-3 py-2.5">
                   <span className="mt-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] shrink-0">Telemetry</span>
-                  <InfoTooltip content="TRACEai captures: request/response bodies, token counts, latency, TTFT, status codes, and user/session IDs. Your provider API key is never stored — it passes through in-flight only." />
+                  <InfoTooltip content="TRACEai captures: request/response bodies, token counts, latency, TTFT, status codes, and user/session IDs. Your provider API key is never stored - it passes through in-flight only." />
                   <span className="text-[12px] text-[#64748B]">Captures request metadata, tokens, cost, and latency. Your API key is never stored.</span>
                 </div>
               </div>

@@ -9,7 +9,7 @@ import { InfoTooltip } from "@/components/ui/tooltip";
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
-      { title: "Analytics — TRACEai" },
+      { title: "TRACEAI | Analytics" },
       {
         name: "description",
         content: "Cost, performance, reliability, and usage analytics across every LLM provider.",
@@ -385,7 +385,7 @@ function PerfTab({ range: _range }: { range: string }) {
           {[
             { l: "p50", v: 612, max: 4000, c: "#10B981", tip: "50% of requests complete within 612ms" },
             { l: "p95", v: 2480, max: 4000, c: "#F59E0B", tip: "95% of requests complete within 2,480ms" },
-            { l: "p99", v: 3920, max: 4000, c: "#EF4444", tip: "99% of requests complete within 3,920ms — this is your tail latency" },
+            { l: "p99", v: 3920, max: 4000, c: "#EF4444", tip: "99% of requests complete within 3,920ms - this is your tail latency" },
           ].map((p) => (
             <button
               key={p.l}
@@ -412,7 +412,7 @@ function PerfTab({ range: _range }: { range: string }) {
           ))}
         </div>
       </ChartCard>
-      <ChartCard title="Time to first token (TTFT)" hint="Lower is better — directly affects perceived UX responsiveness.">
+      <ChartCard title="Time to first token (TTFT)" hint="Lower is better - directly affects perceived UX responsiveness.">
         <AreaChart
           color="#10B981"
           data={[420, 380, 360, 340, 320, 310, 300, 290, 280, 280, 270, 260]}
@@ -420,7 +420,7 @@ function PerfTab({ range: _range }: { range: string }) {
           onClick={() => navigate({ to: '/logs', search: { time: '7d', fromAnalytics: true, analyticsItem: 'TTFT' } })}
         />
       </ChartCard>
-      <ChartCard title="Tokens per second" hint="Output tokens generated per second — higher means faster streaming.">
+      <ChartCard title="Tokens per second" hint="Output tokens generated per second - higher means faster streaming.">
         <AreaChart
           color="#0EA5E9"
           data={[42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64]}

@@ -8,7 +8,7 @@ import { useNavigate } from "@tanstack/react-router";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Overview — TRACEai" },
+      { title: "TRACEAI | Overview" },
       {
         name: "description",
         content:

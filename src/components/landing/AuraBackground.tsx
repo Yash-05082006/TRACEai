@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 
 /**
- * Premium aura background — large blurred gradient blobs that drift very slowly.
+ * Premium aura background - large blurred gradient blobs that drift very slowly.
  * Scoped to its parent section (absolute). Place inside a `relative` container.
  * Sits ABOVE the global grid but BELOW content. Use behind Hero / Problem only.
  */

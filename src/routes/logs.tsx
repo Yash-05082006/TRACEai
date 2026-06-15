@@ -39,7 +39,7 @@ export const Route = createFileRoute("/logs")({
   },
   head: () => ({
     meta: [
-      { title: "Request Explorer — TRACEai" },
+      { title: "TRACEAI | Request Explorer" },
       {
         name: "description",
         content:
@@ -97,9 +97,9 @@ const REQS: Req[] = [
     sessionId: "sess_a3f91",
     tags: ["production", "summarization"],
     prompt:
-      "Summarize the following quarterly report into 5 bullet points focusing on revenue, margin, and forward guidance.\n\n[DOCUMENT START]\nFiscal Q2 2026 — Acme Corp Earnings Report\nRevenue: $2.4B (+18% YoY)\nGross Margin: 68% (+220bps)\nOperating Margin: 31%\nCloud Segment: $1.0B (42% of total)\nGuidance FY26: $10.2–10.5B revenue\nBuyback authorized: $1B\n[DOCUMENT END]",
+      "Summarize the following quarterly report into 5 bullet points focusing on revenue, margin, and forward guidance.\n\n[DOCUMENT START]\nFiscal Q2 2026 - Acme Corp Earnings Report\nRevenue: $2.4B (+18% YoY)\nGross Margin: 68% (+220bps)\nOperating Margin: 31%\nCloud Segment: $1.0B (42% of total)\nGuidance FY26: $10.2-10.5B revenue\nBuyback authorized: $1B\n[DOCUMENT END]",
     completion:
-      "• Revenue grew 18% YoY to $2.4B, beating consensus of $2.31B\n• Operating margin expanded 220bps to 31%, driven by cloud mix shift\n• Cloud segment now represents 42% of total revenue at $1.0B\n• FY26 guidance raised to $10.2–10.5B revenue (prev. $9.8–10.2B)\n• $1B share buyback authorized; signals management confidence in cash generation",
+      "• Revenue grew 18% YoY to $2.4B, beating consensus of $2.31B\n• Operating margin expanded 220bps to 31%, driven by cloud mix shift\n• Cloud segment now represents 42% of total revenue at $1.0B\n• FY26 guidance raised to $10.2-10.5B revenue (prev. $9.8-10.2B)\n• $1B share buyback authorized; signals management confidence in cash generation",
     trace: [
       { label: "Request received", offsetMs: 0 },
       { label: "Auth validated", offsetMs: 4 },
@@ -128,7 +128,7 @@ const REQS: Req[] = [
     prompt:
       "A customer is asking why their invoice shows a charge for $49 when they expected $29. Here is context:\n- Customer upgraded from Starter ($29/mo) to Pro ($49/mo) on June 2\n- Invoice was generated on June 5\n- Customer did not receive an upgrade confirmation email\n\nDraft a friendly, clear reply explaining the discrepancy.",
     completion:
-      "Hi there — thanks for reaching out and flagging this!\n\nThe $49 charge reflects the Pro tier you upgraded to on June 2nd. Because your billing cycle runs from the 5th of each month, this invoice captures your first full month at the Pro rate.\n\nIf you didn't receive the upgrade confirmation email, it's possible it landed in your spam folder — worth a quick check. I've also resent it to the address on file.\n\nIf you believe this upgrade was made in error, I'm happy to process a refund and revert your plan. Just let me know! 😊",
+      "Hi there - thanks for reaching out and flagging this!\n\nThe $49 charge reflects the Pro tier you upgraded to on June 2nd. Because your billing cycle runs from the 5th of each month, this invoice captures your first full month at the Pro rate.\n\nIf you didn't receive the upgrade confirmation email, it's possible it landed in your spam folder - worth a quick check. I've also resent it to the address on file.\n\nIf you believe this upgrade was made in error, I'm happy to process a refund and revert your plan. Just let me know! 😊",
     trace: [
       { label: "Request received", offsetMs: 0 },
       { label: "Auth validated", offsetMs: 3 },
@@ -184,7 +184,7 @@ const REQS: Req[] = [
     sessionId: "sess_d0e83",
     tags: ["production", "embeddings", "batch"],
     prompt:
-      "Batch embedding request — 12 document chunks for vector upsert into Pinecone. Collection: customer-support-kb. Avg chunk size: 153 tokens.",
+      "Batch embedding request - 12 document chunks for vector upsert into Pinecone. Collection: customer-support-kb. Avg chunk size: 153 tokens.",
     completion: "[1536-dimensional vectors × 12 chunks returned successfully]",
     trace: [
       { label: "Request received", offsetMs: 0 },
@@ -269,7 +269,7 @@ const REQS: Req[] = [
     prompt:
       "You are a helpful assistant with access to the company knowledge base.\n\nContext (retrieved):\n---\nRefund Policy (updated June 2026): Full refunds are available within 14 days of purchase. After 14 days, pro-rated credits are offered for annual plans. Monthly plans are non-refundable after the billing date.\n---\n\nUser question: What is the company's refund policy for annual plans cancelled after 30 days?",
     completion:
-      "Based on the company policy, annual plans cancelled after 30 days are eligible for pro-rated credits — not a cash refund. For example, if you cancel a 12-month plan after 3 months, you'd receive credits equivalent to the remaining 9 months, which can be applied to future purchases.\n\nFull cash refunds are only available within the first 14 days of purchase.\n\nWould you like me to initiate a credit issuance for your account?",
+      "Based on the company policy, annual plans cancelled after 30 days are eligible for pro-rated credits - not a cash refund. For example, if you cancel a 12-month plan after 3 months, you'd receive credits equivalent to the remaining 9 months, which can be applied to future purchases.\n\nFull cash refunds are only available within the first 14 days of purchase.\n\nWould you like me to initiate a credit issuance for your account?",
     trace: [
       { label: "Request received", offsetMs: 0 },
       { label: "Auth validated", offsetMs: 4 },
@@ -326,7 +326,7 @@ const REQS: Req[] = [
     sessionId: "sess_i5j38",
     tags: ["production", "error", "schema-migration"],
     prompt:
-      "Generate a full Postgres migration script for the following schema changes:\n- Add `subscription_tier` ENUM column to `users` table\n- Add index on `users.created_at` and `users.subscription_tier`\n- Backfill `subscription_tier` based on `billing_plan` column\n- Drop deprecated `billing_plan` column\n- Create new `subscription_events` audit table\n[schema follows — 3,800 tokens]",
+      "Generate a full Postgres migration script for the following schema changes:\n- Add `subscription_tier` ENUM column to `users` table\n- Add index on `users.created_at` and `users.subscription_tier`\n- Backfill `subscription_tier` based on `billing_plan` column\n- Drop deprecated `billing_plan` column\n- Create new `subscription_events` audit table\n[schema follows - 3,800 tokens]",
     completion: "",
     trace: [
       { label: "Request received", offsetMs: 0 },
@@ -439,7 +439,7 @@ const REQS: Req[] = [
     sessionId: "sess_m9n92",
     tags: ["production", "rag", "ultra-fast"],
     prompt:
-      "Based on the retrieved context below, answer the user's question concisely.\n\nContext: [Acme Product FAQ — Returns section]\n\nUser: Can I return a digital product?",
+      "Based on the retrieved context below, answer the user's question concisely.\n\nContext: [Acme Product FAQ - Returns section]\n\nUser: Can I return a digital product?",
     completion:
       "Digital products (software licenses, API credits, digital downloads) are non-returnable once activated or accessed. If you believe there's been an error, please contact support within 48 hours of purchase.",
     trace: [
@@ -471,7 +471,7 @@ const REQS: Req[] = [
     prompt:
       "Review this pull request diff and provide feedback:\n1. Security vulnerabilities\n2. Performance issues\n3. Code style & readability\n4. Test coverage gaps\n\n```diff\n+function getUserData(userId) {\n+  const query = `SELECT * FROM users WHERE id = ${userId}`;\n+  return db.execute(query);\n+}\n```",
     completion:
-      "## Code Review — Critical Issues Found\n\n### 🔴 Security: SQL Injection (Critical)\nLine 2 uses string interpolation to build a SQL query, making it **directly vulnerable to SQL injection**.\n\n**Fix:**\n```js\nconst query = 'SELECT * FROM users WHERE id = ?';\nreturn db.execute(query, [userId]);\n```\n\n### 🟡 Performance\n- `SELECT *` fetches all columns; specify only needed fields\n- No index hint — ensure `users.id` is indexed (likely primary key, OK)\n\n### 🟢 Style\n- Missing JSDoc/type annotations\n- Function should be async if `db.execute` is async\n\n### ⚠️ Test Gaps\n- No test for SQL injection input\n- No test for non-existent userId",
+      "## Code Review - Critical Issues Found\n\n### 🔴 Security: SQL Injection (Critical)\nLine 2 uses string interpolation to build a SQL query, making it **directly vulnerable to SQL injection**.\n\n**Fix:**\n```js\nconst query = 'SELECT * FROM users WHERE id = ?';\nreturn db.execute(query, [userId]);\n```\n\n### 🟡 Performance\n- `SELECT *` fetches all columns; specify only needed fields\n- No index hint - ensure `users.id` is indexed (likely primary key, OK)\n\n### 🟢 Style\n- Missing JSDoc/type annotations\n- Function should be async if `db.execute` is async\n\n### ⚠️ Test Gaps\n- No test for SQL injection input\n- No test for non-existent userId",
     trace: [
       { label: "Request received", offsetMs: 0 },
       { label: "Auth validated", offsetMs: 3 },
@@ -622,7 +622,7 @@ function RequestExplorerPage() {
   return (
     <AppShell
       title="Request Explorer"
-      subtitle="Every captured LLM request — searchable, filterable, drill-down to prompt and completion."
+      subtitle="Every captured LLM request - searchable, filterable, drill-down to prompt and completion."
       actions={
         <div className="flex items-center gap-2 text-[12px] text-[#64748B]">
           <span className="font-semibold text-[#0F172A]">{rows.length}</span> of {REQS.length}{" "}
@@ -976,7 +976,7 @@ function DetailDrawer({ req, onClose }: { req: Req; onClose: () => void }) {
               ) : (
                 <div className="flex items-center gap-2 rounded-lg border border-dashed border-red-200 bg-red-50/50 px-4 py-3 text-[12px] text-red-600">
                   <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-                  No completion — request failed with status {req.status}
+                  No completion - request failed with status {req.status}
                 </div>
               )}
             </DrawerSection>

@@ -128,9 +128,9 @@ export function AppShell({
           </aside>
 
           {/* ── Main ────────────────────────────────────────── */}
-          <main className="min-w-0 flex-1">
+          <main className="min-w-0 flex-1 pt-2">
             {/* Page header bar */}
-            <div className="sticky top-0 z-20 -mx-4 mb-6 flex min-h-[60px] items-center justify-between border-b border-[#0F172A]/8 bg-white/80 px-4 py-3 backdrop-blur-xl lg:-mx-8 lg:px-8">
+            <div className="sticky top-0 z-20 mb-6 flex min-h-[60px] items-center justify-between border-b border-[#0F172A]/8 bg-white/80 pb-4 backdrop-blur-xl">
               <div className="min-w-0">
                 <h1 className="truncate text-[20px] font-bold tracking-tight text-[#0F172A]">
                   {title}

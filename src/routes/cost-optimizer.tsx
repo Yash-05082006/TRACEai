@@ -7,7 +7,7 @@ import { useState } from "react";
 export const Route = createFileRoute("/cost-optimizer")({
   head: () => ({
     meta: [
-      { title: "Optimization Agent — TRACEai" },
+      { title: "TRACEAI | Optimization Agent" },
       {
         name: "description",
         content:
@@ -433,7 +433,7 @@ function OptimizerPage() {
                 <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0" />
                 <div>
                   <p className="text-[13px] font-semibold text-emerald-800">Fix Applied Successfully</p>
-                  <p className="text-[11px] text-emerald-700">This optimization is now active. You should see cost reduction within 24–48 hours.</p>
+                  <p className="text-[11px] text-emerald-700">This optimization is now active. You should see cost reduction within 24-48 hours.</p>
                 </div>
               </div>
             ) : pendingApply === r.id ? (
