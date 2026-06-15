@@ -198,11 +198,10 @@ function OverviewPage() {
     >
       {isLoading && <LoadingBanner />}
       {error && !isLoading && <ErrorBanner message={errorMessage} />}
-
-      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {isLoading
-          ? Array.from({ length: 4 }).map((_, index) => <KpiSkeleton key={index} />)
-          : kpis.map((kpi) => (
+      {!isLoading && !error && overview && (
+        <>
+          <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {kpis.map((kpi) => (
               <Card key={kpi.label} className="flex flex-col gap-1">
                 <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8]">
                   {kpi.label}
@@ -213,187 +212,157 @@ function OverviewPage() {
                 </div>
               </Card>
             ))}
-      </div>
+          </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="flex flex-col gap-6 lg:col-span-2">
-          <Card className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Key Insights</h2>
-              <InfoTooltip content="AI-generated insights highlighting significant changes in your LLM usage patterns, costs, and performance." />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="flex flex-col gap-6 lg:col-span-2">
+              <Card className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Key Insights</h2>
+                  <InfoTooltip content="AI-generated insights highlighting significant changes in your LLM usage patterns, costs, and performance." />
+                </div>
+                {insights.length === 0 ? (
+                  <p className="text-[12px] text-[#64748B]">No insights available for this time range.</p>
+                ) : (
+                  <ul className="space-y-4">
+                    {insights.map((insight) => (
+                      <InsightItem key={insight.title} {...insight} />
+                    ))}
+                  </ul>
+                )}
+              </Card>
+
+              <Card className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Reliability Alerts</h2>
+                  <InfoTooltip content="Active errors, rate limits, or timeouts detected in your traffic that require immediate attention." />
+                </div>
+                {alerts.length === 0 ? (
+                  <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-[12px] text-emerald-800">
+                    No reliability alerts in the last {range}.
+                  </p>
+                ) : (
+                  alerts.map((alert) => (
+                    <button
+                      key={`${alert.provider}-${alert.statusCode}`}
+                      onClick={() =>
+                        navigate({
+                          to: "/logs",
+                          search: {
+                            status: "error",
+                            provider: alert.provider,
+                            fromAnalytics: true,
+                            analyticsItem: `${alert.provider} Errors`,
+                          },
+                        })
+                      }
+                      className={`text-left w-full rounded-xl border p-4 transition-colors cursor-pointer ${
+                        alert.isRateLimit
+                          ? "border-red-200 bg-red-50 hover:bg-red-100"
+                          : "border-amber-200 bg-amber-50 hover:bg-amber-100"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        {alert.isRateLimit ? (
+                          <AlertTriangle className="h-5 w-5 shrink-0 text-red-600" />
+                        ) : (
+                          <ServerCrash className="h-5 w-5 shrink-0 text-amber-600" />
+                        )}
+                        <div>
+                          <h3
+                            className={`text-[13px] font-semibold ${
+                              alert.isRateLimit ? "text-red-900" : "text-amber-900"
+                            }`}
+                          >
+                            {alert.count} {alert.statusCode} errors on {alert.provider}
+                          </h3>
+                          <p
+                            className={`mt-1 text-[12px] ${
+                              alert.isRateLimit ? "text-red-800" : "text-amber-800"
+                            }`}
+                          >
+                            Detected in the last {range} from live telemetry.
+                          </p>
+                          <p
+                            className={`mt-2 text-[11px] font-medium underline ${
+                              alert.isRateLimit ? "text-red-700" : "text-amber-700"
+                            }`}
+                          >
+                            View affected requests →
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </Card>
             </div>
-            {isLoading ? (
-              <div className="space-y-4">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <div key={index} className="flex gap-3">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-4 w-2/3" />
-                      <Skeleton className="h-3 w-full" />
-                    </div>
+
+            <div className="flex flex-col gap-6 lg:col-span-1">
+              <Card className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Cost Drivers</h2>
+                  <InfoTooltip content="Breakdown of your spend by endpoint or model. Identifies where your budget is actually going." />
+                </div>
+                {costDrivers.length === 0 ? (
+                  <p className="text-[12px] text-[#64748B]">No cost data for this time range.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {costDrivers.map((driver, index) => (
+                      <CostDriver
+                        key={driver.label}
+                        name={driver.label}
+                        amount={formatCurrency(driver.value)}
+                        pct={driver.pct}
+                        color={COST_DRIVER_COLORS[index % COST_DRIVER_COLORS.length]}
+                        onClick={() =>
+                          navigate({
+                            to: "/logs",
+                            search: { q: driver.label, fromAnalytics: true, analyticsItem: driver.label },
+                          })
+                        }
+                      />
+                    ))}
                   </div>
-                ))}
-              </div>
-            ) : insights.length === 0 ? (
-              <p className="text-[12px] text-[#64748B]">No insights available for this time range.</p>
-            ) : (
-              <ul className="space-y-4">
-                {insights.map((insight) => (
-                  <InsightItem key={insight.title} {...insight} />
-                ))}
-              </ul>
-            )}
-          </Card>
+                )}
+              </Card>
 
-          <Card className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Reliability Alerts</h2>
-              <InfoTooltip content="Active errors, rate limits, or timeouts detected in your traffic that require immediate attention." />
-            </div>
-            {isLoading ? (
-              <div className="space-y-3">
-                <Skeleton className="h-24 w-full rounded-xl" />
-                <Skeleton className="h-24 w-full rounded-xl" />
-              </div>
-            ) : alerts.length === 0 ? (
-              <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-[12px] text-emerald-800">
-                No reliability alerts in the last {range}.
-              </p>
-            ) : (
-              alerts.map((alert) => (
-                <button
-                  key={`${alert.provider}-${alert.statusCode}`}
-                  onClick={() =>
-                    navigate({
-                      to: "/logs",
-                      search: {
-                        status: "error",
-                        provider: alert.provider,
-                        fromAnalytics: true,
-                        analyticsItem: `${alert.provider} Errors`,
-                      },
-                    })
-                  }
-                  className={`text-left w-full rounded-xl border p-4 transition-colors cursor-pointer ${
-                    alert.isRateLimit
-                      ? "border-red-200 bg-red-50 hover:bg-red-100"
-                      : "border-amber-200 bg-amber-50 hover:bg-amber-100"
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    {alert.isRateLimit ? (
-                      <AlertTriangle className="h-5 w-5 shrink-0 text-red-600" />
-                    ) : (
-                      <ServerCrash className="h-5 w-5 shrink-0 text-amber-600" />
-                    )}
-                    <div>
-                      <h3
-                        className={`text-[13px] font-semibold ${
-                          alert.isRateLimit ? "text-red-900" : "text-amber-900"
-                        }`}
-                      >
-                        {alert.count} {alert.statusCode} errors on {alert.provider}
-                      </h3>
-                      <p
-                        className={`mt-1 text-[12px] ${
-                          alert.isRateLimit ? "text-red-800" : "text-amber-800"
-                        }`}
-                      >
-                        Detected in the last {range} from live telemetry.
-                      </p>
-                      <p
-                        className={`mt-2 text-[11px] font-medium underline ${
-                          alert.isRateLimit ? "text-red-700" : "text-amber-700"
-                        }`}
-                      >
-                        View affected requests →
-                      </p>
-                    </div>
+              <Card className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Provider Health</h2>
+                  <InfoTooltip content="Real-time status and latency percentiles for the upstream LLM providers you are connected to." />
+                </div>
+                {healthRows.length === 0 ? (
+                  <p className="text-[12px] text-[#64748B]">No provider data for this time range.</p>
+                ) : (
+                  <div className="divide-y divide-[#0F172A]/8 border-t border-[#0F172A]/8">
+                    {healthRows.map((row) => (
+                      <HealthRow
+                        key={row.provider}
+                        provider={row.provider}
+                        status={row.status}
+                        lat={row.lat}
+                        isWarning={row.isWarning}
+                        onClick={() =>
+                          navigate({
+                            to: "/logs",
+                            search: {
+                              provider: row.provider,
+                              status: row.isWarning ? "error" : undefined,
+                              fromAnalytics: true,
+                              analyticsItem: `${row.provider} Health`,
+                            },
+                          })
+                        }
+                      />
+                    ))}
                   </div>
-                </button>
-              ))
-            )}
-          </Card>
-        </div>
-
-        <div className="flex flex-col gap-6 lg:col-span-1">
-          <Card className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Cost Drivers</h2>
-              <InfoTooltip content="Breakdown of your spend by endpoint or model. Identifies where your budget is actually going." />
+                )}
+              </Card>
             </div>
-            {isLoading ? (
-              <div className="space-y-4">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <div key={index}>
-                    <Skeleton className="mb-2 h-3 w-full" />
-                    <Skeleton className="h-1.5 w-full rounded-full" />
-                  </div>
-                ))}
-              </div>
-            ) : costDrivers.length === 0 ? (
-              <p className="text-[12px] text-[#64748B]">No cost data for this time range.</p>
-            ) : (
-              <div className="space-y-4">
-                {costDrivers.map((driver, index) => (
-                  <CostDriver
-                    key={driver.label}
-                    name={driver.label}
-                    amount={formatCurrency(driver.value)}
-                    pct={driver.pct}
-                    color={COST_DRIVER_COLORS[index % COST_DRIVER_COLORS.length]}
-                    onClick={() =>
-                      navigate({
-                        to: "/logs",
-                        search: { q: driver.label, fromAnalytics: true, analyticsItem: driver.label },
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            )}
-          </Card>
-
-          <Card className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <h2 className="text-[15px] font-semibold tracking-tight text-[#0F172A]">Provider Health</h2>
-              <InfoTooltip content="Real-time status and latency percentiles for the upstream LLM providers you are connected to." />
-            </div>
-            {isLoading ? (
-              <div className="space-y-3 border-t border-[#0F172A]/8 pt-3">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <Skeleton key={index} className="h-8 w-full" />
-                ))}
-              </div>
-            ) : healthRows.length === 0 ? (
-              <p className="text-[12px] text-[#64748B]">No provider data for this time range.</p>
-            ) : (
-              <div className="divide-y divide-[#0F172A]/8 border-t border-[#0F172A]/8">
-                {healthRows.map((row) => (
-                  <HealthRow
-                    key={row.provider}
-                    provider={row.provider}
-                    status={row.status}
-                    lat={row.lat}
-                    isWarning={row.isWarning}
-                    onClick={() =>
-                      navigate({
-                        to: "/logs",
-                        search: {
-                          provider: row.provider,
-                          status: row.isWarning ? "error" : undefined,
-                          fromAnalytics: true,
-                          analyticsItem: `${row.provider} Health`,
-                        },
-                      })
-                    }
-                  />
-                ))}
-              </div>
-            )}
-          </Card>
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </AppShell>
   );
 }

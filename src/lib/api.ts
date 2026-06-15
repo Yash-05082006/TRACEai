@@ -1,4 +1,4 @@
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "http://localhost:8004";
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "http://127.0.0.1:8000";
 
 export class ApiError extends Error {
   status: number;
@@ -75,7 +75,9 @@ function buildUrl(path: string, params?: Record<string, string | number | undefi
 }
 
 export async function apiGet<T>(path: string, params?: Record<string, string | number | undefined | null>): Promise<T> {
-  const response = await fetch(buildUrl(path, params));
+  const url = buildUrl(path, params);
+  console.log(`[API REQUEST] ${url}`);
+  const response = await fetch(url);
   if (!response.ok) {
     let message = `Request failed (${response.status})`;
     try {
@@ -86,7 +88,9 @@ export async function apiGet<T>(path: string, params?: Record<string, string | n
     }
     throw new ApiError(message, response.status);
   }
-  return response.json() as Promise<T>;
+  const data = await response.json();
+  console.log(`[API RESPONSE] ${path}`, data);
+  return data as T;
 }
 
 export const analyticsApi = {

@@ -413,7 +413,8 @@ function CostTab({ range, model }: { range: AnalyticsRange; model: string }) {
     <>
       {isLoading && <LoadingBanner label="Loading cost analytics…" />}
       {error && !isLoading && <ErrorBanner message={errorMessage} />}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {!isLoading && !error && costTrendQuery.data && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard
           title="Cumulative spend"
           hint="Total cost over time · hover to inspect, click to drill into requests."
@@ -476,6 +477,7 @@ function CostTab({ range, model }: { range: AnalyticsRange; model: string }) {
           )}
         </ChartCard>
       </div>
+      )}
     </>
   );
 }
@@ -532,7 +534,8 @@ function PerfTab({ range }: { range: AnalyticsRange }) {
     <>
       {isLoading && <LoadingBanner label="Loading performance analytics…" />}
       {error && !isLoading && <ErrorBanner message={errorMessage} />}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {!isLoading && !error && latencyQuery.data && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard
           title="Latency percentiles"
           hint="End-to-end response time at p50, p95, and p99."
@@ -616,6 +619,7 @@ function PerfTab({ range }: { range: AnalyticsRange }) {
           )}
         </ChartCard>
       </div>
+      )}
     </>
   );
 }
@@ -673,7 +677,8 @@ function ReliabilityTab({ range }: { range: AnalyticsRange }) {
     <>
       {isLoading && <LoadingBanner label="Loading reliability analytics…" />}
       {error && !isLoading && <ErrorBanner message={errorMessage} />}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {!isLoading && !error && requestsQuery.data && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title="Error rate" hint="Percentage of requests returning non-2xx HTTP status codes. High values indicate upstream issues.">
           {isLoading ? (
             <ChartSkeleton />
@@ -740,6 +745,7 @@ function ReliabilityTab({ range }: { range: AnalyticsRange }) {
           )}
         </ChartCard>
       </div>
+      )}
     </>
   );
 }
@@ -795,7 +801,8 @@ function UsageTab({ range, model }: { range: AnalyticsRange; model: string }) {
     <>
       {isLoading && <LoadingBanner label="Loading usage analytics…" />}
       {error && !isLoading && <ErrorBanner message={errorMessage} />}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      {!isLoading && !error && requestsQuery.data && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <ChartCard title="Requests over time" hint="Total volume of LLM requests captured by the TRACEai proxy per time bucket.">
           {isLoading ? (
             <ChartSkeleton />
@@ -851,6 +858,7 @@ function UsageTab({ range, model }: { range: AnalyticsRange; model: string }) {
           )}
         </ChartCard>
       </div>
+      )}
     </>
   );
 }

@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(default=None)
     gemini_api_key: str | None = Field(default=None)
     log_level: str = Field(default="INFO")
-    cors_origins: str = Field(default="http://localhost:8080")
+    cors_origins: str = Field(default="http://localhost:8080,http://localhost:8081")
 
     @property
     def async_database_url(self) -> str:
