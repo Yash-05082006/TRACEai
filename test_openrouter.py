@@ -30,13 +30,12 @@ except ImportError:
 # 1. Paste your OpenRouter API Key here (e.g. sk-or-v1-...)
 OPENROUTER_API_KEY = "YOUR_OPENROUTER_API_KEY"
 
-# 2. Paste the TRACE Proxy URL from the TRACEai Integrations page here
-# For local development, this is typically: http://127.0.0.1:8004/proxy/v1
+# 2. Paste your local TRACEai proxy URL here (from the Integrations page)
+# For local testing, this is usually: http://127.0.0.1:8004/proxy/v1
 TRACE_PROXY_URL = "http://127.0.0.1:8004/proxy/v1"
 
-# 3. Paste the TRACE Capture Key from the TRACEai Integrations page here
-# This is the trace key generated for your OpenRouter provider.
-TRACE_CAPTURE_KEY = "trace_sk_live_xnzss7abvb8kqkea"
+# 3. Paste the TRACE Capture Key shown in Step 3 of the Integrations flow
+TRACE_CAPTURE_KEY = "YOUR_TRACE_CAPTURE_KEY"
 
 # The free OpenRouter model to use for this test.
 MODEL_NAME = "openrouter/free"

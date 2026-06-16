@@ -32,7 +32,7 @@ TRACE_PROXY_URL = "http://127.0.0.1:8004/proxy/v1"
 
 # 3. TRACEAI capture key from the Integrations configuration.
 # This matches the generated 'gemini-dev' Google integration in the database.
-TRACE_CAPTURE_KEY = "trace_sk_live_dc2011ea296551c3fcf617cf3f83ea29"
+TRACE_CAPTURE_KEY = "YOUR_TRACE_CAPTURE_KEY"
 
 # Model name to use (the proxy forwards this model identifier to Google Gemini)
 MODEL_NAME = "gemini-2.0-flash"
