@@ -29,6 +29,7 @@ async def proxy_chat_completions(
     request: Request,
     db: DbSession,
     x_trace_key: Annotated[str | None, Header(alias="x-trace-key")] = None,
+    x_trace_endpoint: Annotated[str | None, Header(alias="x-trace-endpoint")] = None,
     x_trace_feature: Annotated[str | None, Header(alias="x-trace-feature")] = None,
     x_trace_user: Annotated[str | None, Header(alias="x-trace-user")] = None,
 ) -> Response:
@@ -89,7 +90,7 @@ async def proxy_chat_completions(
         await store_llm_request(
             db,
             application_id=application.id,
-            endpoint=CHAT_COMPLETIONS_ENDPOINT,
+            endpoint=x_trace_endpoint or CHAT_COMPLETIONS_ENDPOINT,
             telemetry=telemetry,
             feature=x_trace_feature,
             user_ref=x_trace_user,

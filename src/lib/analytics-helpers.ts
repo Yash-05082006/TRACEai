@@ -203,6 +203,8 @@ export type ExplorerRequest = {
   status: number;
   prompt: string;
   completion: string;
+  application: string;
+  endpoint: string;
   feature: string;
   userId: string;
   sessionId: string;
@@ -244,6 +246,8 @@ export function mapApiRequestToExplorer(item: RequestLogItem): ExplorerRequest {
     status,
     prompt: item.prompt_preview ?? "",
     completion: item.completion_preview ?? "",
+    application: item.application_name ?? "Unknown App",
+    endpoint: item.endpoint ?? "unknown",
     feature: item.feature ?? "unknown",
     userId: "—",
     sessionId: "—",

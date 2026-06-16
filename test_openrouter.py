@@ -27,7 +27,7 @@ except ImportError:
 # CONFIGURATION - PASTE YOUR KEYS HERE
 # ==============================================================================
 
-# 1. Paste your OpenRouter API Key here (e.g. sk-or-v1-...)
+# 1. Paste your OpenRouter API Key here (e.g. sk-or-...)
 OPENROUTER_API_KEY = "YOUR_OPENROUTER_API_KEY"
 
 # 2. Paste your local TRACEai proxy URL here (from the Integrations page)
@@ -48,8 +48,8 @@ def main():
     print("======================================================================\n")
 
     # Basic configuration check
-    if not OPENROUTER_API_KEY.startswith("sk-or-v1-"):
-        print("[-] Error: Please paste a valid OpenRouter API Key starting with 'sk-or-v1-' in OPENROUTER_API_KEY.")
+    if not OPENROUTER_API_KEY.startswith("sk-or-"):
+        print("[-] Error: Please paste a valid OpenRouter API Key starting with 'sk-or-' in OPENROUTER_API_KEY.")
         sys.exit(1)
         
     if not (TRACE_PROXY_URL.startswith("http://") or TRACE_PROXY_URL.startswith("https://")):

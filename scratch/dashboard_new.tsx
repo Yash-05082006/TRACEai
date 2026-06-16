@@ -72,7 +72,7 @@ function DashboardPage() {
       actions={
         <div className="inline-flex rounded-lg border border-[#0F172A]/8 bg-white p-0.5 shadow-sm">
           {ranges.map((r) => (
-            <button key={r} onClick={() => setRange(r)} className={`rounded-md px-3 py-1 text-[12px] font-medium transition-colors ${range === r ? "bg-[#0F172A] text-white shadow-sm" : "text-[#64748B] hover:text-[#0F172A]"}`}>{r}</button>
+            <button key={r} onClick={() => setRange(r)} className={\`rounded-md px-3 py-1 text-[12px] font-medium transition-colors \${range === r ? "bg-[#0F172A] text-white shadow-sm" : "text-[#64748B] hover:text-[#0F172A]"}\`}>{r}</button>
           ))}
         </div>
       }
@@ -105,7 +105,7 @@ function DashboardPage() {
               {topApps.length === 0 ? <EmptyData /> : (
                 <div className="space-y-4">
                   {topApps.map((app, i) => (
-                    <BarChartRow key={app.application_name} label={app.application_name} value={app.cost} max={topApps[0].cost} format={(v) => formatCurrency(v)} sub={`${formatNumber(app.requests)} req`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
+                    <BarChartRow key={app.application_name} label={app.application_name} value={app.cost} max={topApps[0].cost} format={(v) => formatCurrency(v)} sub={\`\${formatNumber(app.requests)} req\`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
                   ))}
                 </div>
               )}
@@ -120,7 +120,7 @@ function DashboardPage() {
               {mostExpensiveEndpoints.length === 0 ? <EmptyData /> : (
                 <div className="space-y-4">
                   {mostExpensiveEndpoints.map((ep, i) => (
-                    <BarChartRow key={ep.endpoint} label={ep.endpoint} value={ep.cost} max={mostExpensiveEndpoints[0].cost} format={(v) => formatCurrency(v)} sub={`${ep.pct?.toFixed(1) || 0}% of total`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
+                    <BarChartRow key={ep.endpoint} label={ep.endpoint} value={ep.cost} max={mostExpensiveEndpoints[0].cost} format={(v) => formatCurrency(v)} sub={\`\${ep.pct?.toFixed(1) || 0}% of total\`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
                   ))}
                 </div>
               )}
@@ -135,7 +135,7 @@ function DashboardPage() {
               {topFeatures.length === 0 ? <EmptyData /> : (
                 <div className="space-y-4">
                   {topFeatures.map((f, i) => (
-                    <BarChartRow key={f.feature} label={f.feature} value={f.tokens} max={topFeatures[0].tokens} format={(v) => formatNumber(v) + " tok"} sub={`${formatCurrency(f.cost)}`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
+                    <BarChartRow key={f.feature} label={f.feature} value={f.tokens} max={topFeatures[0].tokens} format={(v) => formatNumber(v) + " tok"} sub={\`\${formatCurrency(f.cost)}\`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
                   ))}
                 </div>
               )}
@@ -150,7 +150,7 @@ function DashboardPage() {
               {highestLatencyEndpoints.length === 0 ? <EmptyData /> : (
                 <div className="space-y-4">
                   {highestLatencyEndpoints.map((ep, i) => (
-                    <BarChartRow key={ep.endpoint} label={ep.endpoint} value={ep.avg_latency_ms} max={highestLatencyEndpoints[0].avg_latency_ms} format={(v) => Math.round(v) + "ms"} sub={`${formatNumber(ep.requests)} req`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
+                    <BarChartRow key={ep.endpoint} label={ep.endpoint} value={ep.avg_latency_ms} max={highestLatencyEndpoints[0].avg_latency_ms} format={(v) => Math.round(v) + "ms"} sub={\`\${formatNumber(ep.requests)} req\`} color={COST_DRIVER_COLORS[i % COST_DRIVER_COLORS.length]} />
                   ))}
                 </div>
               )}
@@ -197,7 +197,7 @@ function BarChartRow({ label, value, max, format, sub, color }: { label: string;
         <div className="text-[13px] font-medium text-[#0F172A] shrink-0">{format(value)} <span className="text-[12px] font-normal text-[#64748B] ml-1">({sub})</span></div>
       </div>
       <div className="h-2 w-full rounded-full bg-[#0F172A]/[0.03] overflow-hidden">
-        <div className={`h-full rounded-full bg-gradient-to-r ${color}`} style={{ width: `${pct}%` }} />
+        <div className={\`h-full rounded-full bg-gradient-to-r \${color}\`} style={{ width: \`\${pct}%\` }} />
       </div>
     </div>
   );

@@ -237,22 +237,22 @@ function ApplicationDetailView({ application, onBack }: { application: Applicati
             <div className="flex border-b border-[#0F172A]/8 bg-white">
               <button
                 onClick={() => setLang("python")}
-                className={`px-4 py-2 text-[12px] font-semibold ${lang === "python" ? "border-b-2 border-[#2563EB] text-[#2563EB]" : "text-[#64748B] hover:text-[#0F172A]"}`}
+                className={\`px-4 py-2 text-[12px] font-semibold \${lang === "python" ? "border-b-2 border-[#2563EB] text-[#2563EB]" : "text-[#64748B] hover:text-[#0F172A]"}\`}
               >
                 Python
               </button>
               <button
                 onClick={() => setLang("node")}
-                className={`px-4 py-2 text-[12px] font-semibold ${lang === "node" ? "border-b-2 border-[#2563EB] text-[#2563EB]" : "text-[#64748B] hover:text-[#0F172A]"}`}
+                className={\`px-4 py-2 text-[12px] font-semibold \${lang === "node" ? "border-b-2 border-[#2563EB] text-[#2563EB]" : "text-[#64748B] hover:text-[#0F172A]"}\`}
               >
                 Node.js
               </button>
             </div>
             <div className="bg-[#0B1220] p-4 font-mono text-[13px] text-[#E2E8F0] overflow-x-auto leading-loose">
               {lang === "python" ? (
-                <pre>{`from openai import OpenAI\n\nclient = OpenAI(\n    base_url="${application.proxy_url || 'http://127.0.0.1:8004/proxy/v1'}",\n    api_key=os.environ.get("OPENAI_API_KEY"),\n    default_headers={\n        "x-trace-key": "${application.trace_key}",\n        "x-trace-endpoint": "${application.endpoints?.[0]?.endpoint_path || '/chat'}",\n        "x-trace-feature": "${application.endpoints?.[0]?.feature || 'Website Assistant'}"\n    }\n)\n\nresponse = client.chat.completions.create(...)`}</pre>
+                <pre>{\`from openai import OpenAI\n\nclient = OpenAI(\n    base_url="\${application.proxy_url || 'http://127.0.0.1:8004/proxy/v1'}",\n    api_key=os.environ.get("OPENAI_API_KEY"),\n    default_headers={\n        "x-trace-key": "\${application.trace_key}",\n        "x-trace-endpoint": "\${application.endpoints?.[0]?.endpoint_path || '/chat'}",\n        "x-trace-feature": "\${application.endpoints?.[0]?.feature || 'Website Assistant'}"\n    }\n)\n\nresponse = client.chat.completions.create(...)\`}</pre>
               ) : (
-                <pre>{`import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  baseURL: '${application.proxy_url || 'http://127.0.0.1:8004/proxy/v1'}',\n  apiKey: process.env.OPENAI_API_KEY,\n  defaultHeaders: { \n    'x-trace-key': '${application.trace_key}',\n    'x-trace-endpoint': '${application.endpoints?.[0]?.endpoint_path || '/chat'}',\n    'x-trace-feature': '${application.endpoints?.[0]?.feature || 'Website Assistant'}'\n  }\n});\n\nconst response = await client.chat.completions.create(...);`}</pre>
+                <pre>{\`import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  baseURL: '\${application.proxy_url || 'http://127.0.0.1:8004/proxy/v1'}',\n  apiKey: process.env.OPENAI_API_KEY,\n  defaultHeaders: { \n    'x-trace-key': '\${application.trace_key}',\n    'x-trace-endpoint': '\${application.endpoints?.[0]?.endpoint_path || '/chat'}',\n    'x-trace-feature': '\${application.endpoints?.[0]?.feature || 'Website Assistant'}'\n  }\n});\n\nconst response = await client.chat.completions.create(...);\`}</pre>
               )}
             </div>
           </Card>
@@ -291,7 +291,7 @@ function EndpointForm({ appId, onCancel, onSuccess }: { appId: string; onCancel:
   const mutation = useMutation({
     mutationFn: (data: any) => applicationsApi.createEndpoint(appId, data),
     onSuccess,
-    onError: (err) => alert(`Failed: ${err}`),
+    onError: (err) => alert(\`Failed: \${err}\`),
   });
 
   return (

@@ -13,14 +13,54 @@ class ApplicationBase(BaseModel):
     upstream_base_url: str | None = None
 
 
-class ApplicationCreate(ApplicationBase):
+class ApplicationEndpointBase(BaseModel):
+    endpoint_name: str
+    endpoint_path: str
+    request_method: str = "POST"
+    feature: str | None = None
+    description: str | None = None
+
+
+class ApplicationEndpointCreate(ApplicationEndpointBase):
     pass
 
 
-class ApplicationResponse(ApplicationBase):
+class ApplicationEndpointUpdate(BaseModel):
+    endpoint_name: str | None = None
+    endpoint_path: str | None = None
+    request_method: str | None = None
+    feature: str | None = None
+    description: str | None = None
+
+
+class ApplicationEndpointResponse(ApplicationEndpointBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
-    trace_key: str
+    application_id: UUID
     created_at: datetime
-    proxy_url: str = "/proxy/v1"
+
+
+class ApplicationCreate(BaseModel):
+    application_name: str
+    provider: str | None = "custom"
+    default_model: str | None = None
+    upstream_base_url: str | None = None
+    base_url: str | None = None
+    description: str | None = None
+
+
+class ApplicationResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    application_name: str
+    provider: str
+    default_model: str | None
+    upstream_base_url: str | None
+    base_url: str | None = None
+    description: str | None = None
+    trace_key: str
+    proxy_url: str
+    created_at: datetime
+    endpoints: list[ApplicationEndpointResponse] = []

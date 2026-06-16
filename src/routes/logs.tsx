@@ -334,10 +334,12 @@ function RequestExplorerPage() {
             <thead>
               <tr className="border-b border-[#0F172A]/8 bg-[#F8FAFC]">
                 {[
-                  { label: "Timestamp", align: "left", tooltip: "When the request was received by the TRACEai proxy (UTC). Used for time-range filtering." },
-                  { label: "Request ID", align: "left", tooltip: "Unique identifier assigned by TRACEai to every captured request. Use for debugging and tracing." },
-                  { label: "Provider", align: "left", tooltip: "The upstream LLM provider this request was forwarded to (e.g., OpenAI, Anthropic, Google)." },
-                  { label: "Model", align: "left", tooltip: "The specific model variant called. More capable models cost more per token." },
+                  { label: "Timestamp", align: "left", tooltip: "When the request was received by the TRACEai proxy (UTC)." },
+                  { label: "Application", align: "left", tooltip: "The originating application." },
+                  { label: "Endpoint", align: "left", tooltip: "The API endpoint hit." },
+                  { label: "Feature", align: "left", tooltip: "The product feature attached." },
+                  { label: "Provider", align: "left", tooltip: "The upstream LLM provider." },
+                  { label: "Model", align: "left", tooltip: "The specific model variant called." },
                   { label: "Tokens", align: "right", tooltip: "Total tokens = Input tokens + Output tokens. Input tokens are your prompt; output tokens are the model's response. Drives cost." },
                   { label: "Cost", align: "right", tooltip: "Estimated cost calculated as (input_tokens × input_price + output_tokens × output_price) for the selected model." },
                   { label: "Latency", align: "right", tooltip: "Total round-trip time from proxy receiving the request to returning the full response. Includes network overhead and model generation time." },
@@ -364,7 +366,7 @@ function RequestExplorerPage() {
               {isLoading ? (
                 Array.from({ length: 8 }).map((_, index) => (
                   <tr key={index} className="border-t border-[#0F172A]/[0.05]">
-                    {Array.from({ length: 9 }).map((__, cellIndex) => (
+                    {Array.from({ length: 11 }).map((__, cellIndex) => (
                       <td key={cellIndex} className="px-4 py-3">
                         <Skeleton className="h-4 w-full" />
                       </td>
@@ -373,7 +375,7 @@ function RequestExplorerPage() {
                 ))
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={9}>
+                  <td colSpan={11}>
                     <EmptyState onClear={() => navigate({ search: {}, replace: true })} />
                   </td>
                 </tr>
@@ -389,8 +391,14 @@ function RequestExplorerPage() {
                       }`}
                     >
                       <td className="px-4 py-3 font-mono text-[11px] text-[#64748B]">{r.ts}</td>
-                      <td className="px-4 py-3 font-mono text-[11px] font-medium text-[#0F172A]">
-                        {r.id.slice(0, 12)}
+                      <td className="px-4 py-3 text-[11px] font-semibold text-[#0F172A]">
+                        {r.application}
+                      </td>
+                      <td className="px-4 py-3 font-mono text-[11px] text-[#475569]">
+                        {r.endpoint}
+                      </td>
+                      <td className="px-4 py-3 text-[11px] font-medium text-[#2563EB]">
+                        {r.feature}
                       </td>
                       <td className="px-4 py-3">
                         <span
@@ -568,9 +576,11 @@ function DetailDrawer({ req, onClose }: { req: Req; onClose: () => void }) {
                 {[
                   ["Request ID", <span className="font-mono">{req.id}</span>],
                   ["Timestamp", req.ts],
+                  ["Application", req.application],
+                  ["Endpoint", <span className="font-mono">{req.endpoint}</span>],
+                  ["Feature", req.feature],
                   ["Provider", req.provider],
                   ["Model", <span className="font-mono">{req.model}</span>],
-                  ["Feature", req.feature],
                   ["Status", sm.label],
                 ].map(([k, v]) => (
                   <div key={String(k)}>

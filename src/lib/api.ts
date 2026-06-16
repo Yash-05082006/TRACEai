@@ -34,6 +34,30 @@ export type TrendPoint = {
   p95_latency_ms?: number;
 };
 
+export type ApplicationStats = {
+  application_name: string;
+  cost: number;
+  requests: number;
+  tokens: number;
+};
+
+export type EndpointStats = {
+  endpoint: string;
+  cost: number;
+  requests: number;
+  tokens: number;
+  avg_latency_ms: number;
+  error_rate: number;
+  pct?: number | null;
+};
+
+export type FeatureStats = {
+  feature: string;
+  cost: number;
+  requests: number;
+  tokens: number;
+};
+
 export type ProviderStats = {
   provider: string;
   cost: number;
@@ -44,6 +68,7 @@ export type ProviderStats = {
 
 export type RequestLogItem = {
   id: string;
+  application_name?: string;
   model: string;
   provider: string;
   prompt_tokens: number;
@@ -102,6 +127,9 @@ export const analyticsApi = {
   costTrend: (range: AnalyticsRange) => apiGet<TrendPoint[]>("/analytics/cost-trend", { range }),
   tokenTrend: (range: AnalyticsRange) => apiGet<TrendPoint[]>("/analytics/token-trend", { range }),
   providers: (range: AnalyticsRange) => apiGet<ProviderStats[]>("/analytics/providers", { range }),
+  applications: (range: AnalyticsRange) => apiGet<ApplicationStats[]>("/analytics/applications", { range }),
+  endpoints: (range: AnalyticsRange) => apiGet<EndpointStats[]>("/analytics/endpoints", { range }),
+  features: (range: AnalyticsRange) => apiGet<FeatureStats[]>("/analytics/features", { range }),
   providerBreakdown: (range: AnalyticsRange) => apiGet<ProviderStats[]>("/analytics/provider-breakdown", { range }),
   requestVolume: (range: AnalyticsRange) => apiGet<TrendPoint[]>("/analytics/request-volume", { range }),
   latencyTrend: (range: AnalyticsRange) => apiGet<TrendPoint[]>("/analytics/latency-trend", { range }),
@@ -120,5 +148,63 @@ export const analyticsApi = {
       status: params.status,
       provider: params.provider,
       q: params.q,
+    }),
+};
+
+export type Application = {
+  id: string;
+  application_name: string;
+  provider: string;
+  trace_key: string;
+  base_url?: string;
+  description?: string;
+  proxy_url: string;
+  endpoints: ApplicationEndpoint[];
+};
+
+export type ApplicationEndpoint = {
+  id: string;
+  endpoint_name: string;
+  endpoint_path: string;
+  request_method: string;
+  feature?: string;
+  description?: string;
+};
+
+export const applicationsApi = {
+  list: () => apiGet<Application[]>("/applications"),
+  get: (id: string) => apiGet<Application>(`/applications/${id}`),
+  create: (data: any) =>
+    fetch(`${API_BASE}/applications`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((res) => {
+      if (!res.ok) throw new Error("Failed to create application");
+      return res.json() as Promise<Application>;
+    }),
+  createEndpoint: (appId: string, data: any) =>
+    fetch(`${API_BASE}/applications/${appId}/endpoints`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((res) => {
+      if (!res.ok) throw new Error("Failed to create endpoint");
+      return res.json() as Promise<ApplicationEndpoint>;
+    }),
+  updateEndpoint: (appId: string, endpointId: string, data: any) =>
+    fetch(`${API_BASE}/applications/${appId}/endpoints/${endpointId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((res) => {
+      if (!res.ok) throw new Error("Failed to update endpoint");
+      return res.json() as Promise<ApplicationEndpoint>;
+    }),
+  deleteEndpoint: (appId: string, endpointId: string) =>
+    fetch(`${API_BASE}/applications/${appId}/endpoints/${endpointId}`, {
+      method: "DELETE",
+    }).then((res) => {
+      if (!res.ok) throw new Error("Failed to delete endpoint");
     }),
 };

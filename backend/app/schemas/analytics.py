@@ -36,6 +36,7 @@ class RequestLogItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
+    application_name: str | None = None
     model: str
     provider: str
     prompt_tokens: int
@@ -58,11 +59,30 @@ class RequestLogPage(BaseModel):
     items: list[RequestLogItem]
 
 
+class EndpointStats(BaseModel):
+    endpoint: str
+    cost: float
+    requests: int
+    tokens: int
+    avg_latency_ms: float
+    error_rate: float
+    pct: float | None = None
+
+
+class FeatureStats(BaseModel):
+    feature: str
+    cost: float
+    requests: int
+    tokens: int
+
+
 class ApplicationMetricsResponse(BaseModel):
     application_id: UUID
+    application_name: str | None = None
     total_requests: int
     total_tokens: int
     total_cost: float
     avg_latency: float
     error_rate: float
     range: str = "30d"
+    top_endpoints: list[EndpointStats] = []

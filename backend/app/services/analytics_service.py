@@ -282,8 +282,10 @@ async def get_requests(
     count_stmt = select(func.count(LLMRequest.id)).where(where_clause)
     total = int((await db.execute(count_stmt)).scalar_one())
 
+    from sqlalchemy.orm import selectinload
     stmt: Select = (
         select(LLMRequest)
+        .options(selectinload(LLMRequest.application))
         .where(where_clause)
         .order_by(LLMRequest.created_at.desc())
         .limit(limit)
@@ -294,6 +296,7 @@ async def get_requests(
     items = [
         {
             "id": row.id,
+            "application_name": row.application.application_name if row.application else "Unknown",
             "model": row.model,
             "provider": row.provider,
             "prompt_tokens": row.prompt_tokens,
@@ -314,6 +317,117 @@ async def get_requests(
     return {"total": total, "limit": limit, "offset": offset, "items": items}
 
 
+async def get_endpoints(
+    db: AsyncSession,
+    *,
+    range_key: str = "30d",
+    application_id: uuid.UUID | None = None,
+) -> list[dict]:
+    since, _ = parse_range(range_key)
+    filters = _base_filters(since, application_id)
+
+    stmt = (
+        select(
+            LLMRequest.endpoint.label("endpoint"),
+            func.coalesce(func.sum(LLMRequest.cost), 0).label("cost"),
+            func.count(LLMRequest.id).label("requests"),
+            func.coalesce(func.sum(LLMRequest.total_tokens), 0).label("tokens"),
+            func.coalesce(func.avg(LLMRequest.latency_ms), 0).label("avg_latency_ms"),
+            func.coalesce(
+                cast(func.count(LLMRequest.id).filter(LLMRequest.status >= 400), Float)
+                * 100.0 / func.nullif(func.count(LLMRequest.id), 0),
+                0,
+            ).label("error_rate"),
+        )
+        .where(filters)
+        .group_by(LLMRequest.endpoint)
+        .order_by(func.sum(LLMRequest.cost).desc())
+    )
+
+    rows = (await db.execute(stmt)).all()
+    total_cost = sum(float(r.cost or 0) for r in rows) or 1.0
+
+    results = []
+    for row in rows:
+        results.append({
+            "endpoint": row.endpoint,
+            "cost": round(float(row.cost or 0), 6),
+            "requests": int(row.requests),
+            "tokens": int(row.tokens or 0),
+            "avg_latency_ms": round(float(row.avg_latency_ms or 0), 2),
+            "error_rate": round(float(row.error_rate or 0), 4),
+            "pct": round(float(row.cost or 0) * 100.0 / total_cost, 2),
+        })
+    return results
+
+
+async def get_features(
+    db: AsyncSession,
+    *,
+    range_key: str = "30d",
+    application_id: uuid.UUID | None = None,
+) -> list[dict]:
+    since, _ = parse_range(range_key)
+    filters = _base_filters(since, application_id)
+
+    stmt = (
+        select(
+            func.coalesce(LLMRequest.feature, "unknown").label("feature"),
+            func.coalesce(func.sum(LLMRequest.cost), 0).label("cost"),
+            func.count(LLMRequest.id).label("requests"),
+            func.coalesce(func.sum(LLMRequest.total_tokens), 0).label("tokens"),
+        )
+        .where(filters)
+        .group_by(LLMRequest.feature)
+        .order_by(func.sum(LLMRequest.cost).desc())
+    )
+
+    rows = (await db.execute(stmt)).all()
+    return [
+        {
+            "feature": row.feature,
+            "cost": round(float(row.cost or 0), 6),
+            "requests": int(row.requests),
+            "tokens": int(row.tokens or 0),
+        }
+        for row in rows
+    ]
+
+
+async def get_applications(
+    db: AsyncSession,
+    *,
+    range_key: str = "30d",
+) -> list[dict]:
+    from app.models.application import Application
+    since, _ = parse_range(range_key)
+    filters = _base_filters(since, None)
+
+    stmt = (
+        select(
+            Application.application_name.label("application_name"),
+            func.coalesce(func.sum(LLMRequest.cost), 0).label("cost"),
+            func.count(LLMRequest.id).label("requests"),
+            func.coalesce(func.sum(LLMRequest.total_tokens), 0).label("tokens"),
+        )
+        .join(Application, Application.id == LLMRequest.application_id)
+        .where(filters)
+        .group_by(Application.application_name)
+        .order_by(func.sum(LLMRequest.cost).desc())
+    )
+
+    rows = (await db.execute(stmt)).all()
+    return [
+        {
+            "application_name": row.application_name,
+            "cost": round(float(row.cost or 0), 6),
+            "requests": int(row.requests),
+            "tokens": int(row.tokens or 0),
+        }
+        for row in rows
+    ]
+
+
 async def get_application_metrics(
     db: AsyncSession,
     application_id: uuid.UUID,
@@ -322,12 +436,17 @@ async def get_application_metrics(
 ) -> dict | None:
     from app.models.application import Application
 
-    exists = await db.execute(select(Application.id).where(Application.id == application_id))
-    if exists.scalar_one_or_none() is None:
+    result = await db.execute(select(Application).where(Application.id == application_id))
+    application = result.scalar_one_or_none()
+    if application is None:
         return None
 
     overview = await get_overview(db, range_key=range_key, application_id=application_id)
+    top_endpoints = await get_endpoints(db, range_key=range_key, application_id=application_id)
+    
     return {
         "application_id": application_id,
+        "application_name": application.application_name,
         **overview,
+        "top_endpoints": top_endpoints[:5],
     }

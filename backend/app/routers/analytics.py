@@ -11,6 +11,8 @@ from app.schemas.analytics import (
     ApplicationMetricsResponse,
     OverviewResponse,
     ProviderStats,
+    EndpointStats,
+    FeatureStats,
     RequestLogPage,
     TrendPoint,
 )
@@ -55,6 +57,33 @@ async def analytics_providers(
 ) -> list[ProviderStats]:
     rows = await analytics_service.get_providers(db, range_key=range, include_pct=False)
     return [ProviderStats(**row) for row in rows]
+
+
+@router.get("/applications")
+async def get_applications_metrics(
+    db: DbSession,
+    range: str = Query(default="30d"),
+):
+    """Get metrics aggregated by application."""
+    return await analytics_service.get_applications(db, range_key=range)
+
+
+@router.get("/endpoints", response_model=list[EndpointStats])
+async def analytics_endpoints(
+    db: DbSession,
+    range: str = Query(default="30d"),
+) -> list[EndpointStats]:
+    rows = await analytics_service.get_endpoints(db, range_key=range)
+    return [EndpointStats(**row) for row in rows]
+
+
+@router.get("/features", response_model=list[FeatureStats])
+async def analytics_features(
+    db: DbSession,
+    range: str = Query(default="30d"),
+) -> list[FeatureStats]:
+    rows = await analytics_service.get_features(db, range_key=range)
+    return [FeatureStats(**row) for row in rows]
 
 
 @router.get("/provider-breakdown", response_model=list[ProviderStats])
